@@ -1,0 +1,303 @@
+Below is a single, comprehensive, and fully detailed prompt that specifies every file required for the NSBS project. This unified prompt covers configuration, UI, API, state management, persistence, RBAC/authentication, payment logic, exam handling, certificate generation, error handling, testing directives, SSR/hydration strategies, logging/performance, and proper barrel file creation. Every instruction is explicit, with full TypeScript/TSX adherence, strict typing (no “any”), S.O.L.I.D principles, and production‑ready standards (≥08/2024). Copy and paste this entire prompt into your LLM so that it generates every file exactly as specified.
+
+────────────────────────────
+Comprehensive NSBS Project File Creation Prompt
+
+You are tasked with creating a complete production‑ready online learning platform called “National Society of Business Sciences” (NSBS) using Next.js (v15.1.7), React (v19.0.0), TypeScript (v5.7.2), Tailwind CSS (v4.0.6), autoprefixer (latest), Zod (latest), and Zustand (latest). The platform must follow the Next.js App Router architecture (no page or file router) and implement robust features including RBAC, authjs v5 authentication, dynamic payment links (with Stripe integration), persistence via a PostgreSQL database using Prisma (with Supabase), an admin panel with a WYSIWYG course creator, exam handling (with 100-question exams and pass/fail logic), certificate generation (PDF with security measures), comprehensive error handling, SSR/hydration with caching, logging, and thorough inline documentation. All code must be written exclusively in TypeScript/TSX (no .js/.jsx/.mjs) with strict typing (avoid “any”), full S.O.L.I.D compliance, and include extensive inline comments and testing instructions (using Jest, React Testing Library, or Cypress where applicable). Additionally, every directory containing multiple files must include a barrel file (index.ts) that re‑exports all named exports to avoid import/export ambiguities.
+
+Below is a file-by‑file breakdown. Each file must begin with a comment that exactly states its relative path (e.g., “// filename: /src/app/page.tsx”). For any directory with more than one file (for example, /src/app/components/ui, /src/lib, /src/store, /src/utils), create an index.ts barrel file that re‑exports every named export from that directory.
+
+────────────────────────────
+Root-level Files:
+	1.	package.json (Root)
+	•	Create a complete package.json with the following:
+	•	"name": "nsbs", "version": "1.0.0", "private": true
+	•	Scripts:
+	•	"dev": "cross-env NODE_ENV=development next dev",
+	•	"build": "cross-env NODE_ENV=production next build",
+	•	"start": "cross-env NODE_ENV=production next start",
+	•	"lint": "next lint",
+	•	"format": "prettier --write .",
+	•	"type-check": "tsc --noEmit",
+	•	"prepare": "husky install",
+	•	"validate": "npm run lint && npm run type-check && npm run format",
+	•	"clean": "rm -rf .next node_modules",
+	•	Add testing scripts (e.g., "test": "jest", "e2e-test": "cypress run").
+	•	All dependencies as specified (including next, react, react-dom, typescript, tailwindcss, autoprefixer, zod, zustand, @prisma/client, auth, @auth/core, @auth/prisma-adapter, bcryptjs, clsx, lucide-react, tailwind-merge, tailwindcss-animate) and devDependencies (ESLint, husky, lint-staged, cross-env, ts-node, prisma, etc.).
+	•	No barrel file needed at the root.
+	2.	next.config.ts (Root)
+	•	Create a production‑ready next.config.ts:
+	•	Import NextConfig type from “next”.
+	•	Set reactStrictMode: true, swcMinify: true.
+	•	Set experimental options: { serverActions: true, appDir: true }.
+	•	Set TypeScript strictness (ignoreBuildErrors: false) and ESLint options (ignoreDuringBuilds: false).
+	•	Define images: { domains: ["yourdomain.com", "res.cloudinary.com"] }.
+	•	Include inline comments and error-handling strategies for runtime configuration if necessary.
+	3.	tsconfig.json (Root)
+	•	Generate a tsconfig.json that:
+	•	Targets "ESNext", uses "module": "ESNext", includes "lib": ["DOM", "ESNext"], and sets "jsx": "preserve".
+	•	Enables "strict", "strictNullChecks", and "noImplicitAny".
+	•	Sets "esModuleInterop": true, "skipLibCheck": true, and "forceConsistentCasingInFileNames": true.
+	•	Defines "baseUrl": "." and sets up path aliases:
+	•	"@components/*": ["./src/app/components/ui/*"],
+	•	"@lib/*": ["./src/lib/*"],
+	•	"@hooks/*": ["./src/hooks/*"],
+	•	"@utils/*": ["./src/utils/*"],
+	•	"@store/*": ["./src/store/*"].
+	•	Includes "src/**/*" and excludes "node_modules", "dist", and ".next".
+	•	Include inline comments explaining each setting.
+	4.	tailwind.config.ts (Root)
+	•	Produce a tailwind.config.ts that:
+	•	Uses darkMode: ["class"].
+	•	Sets content paths to include:
+	•	"./src/pages/**/*.{ts,tsx,mdx}",
+	•	"./src/app/**/*.{ts,tsx,mdx}",
+	•	"./src/app/components/ui/**/*.{ts,tsx,mdx}".
+	•	Extends the theme with NSBS custom colors (mattes, black, gray, slate, tan, white) and borderRadius values (lg, md, sm).
+	•	Includes plugins: "tailwindcss-animate" and a custom plugin that adds a variant "supports-hover" (@media (hover: hover)).
+	•	Include inline comments.
+	5.	eslint.config.ts (Root)
+	•	Develop a complete eslint.config.ts:
+	•	Use the FlatCompat approach to extend "next/core-web-vitals".
+	•	Ignore directories: "node_modules", "dist", ".next", "build".
+	•	Include plugins: "@typescript-eslint", "unused-imports", "import", "prettier".
+	•	Enforce rules:
+	•	"prettier/prettier": "error",
+	•	"unused-imports/no-unused-imports": "error",
+	•	"unused-imports/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+	•	"import/order": [...] with groups, newlines, and alphabetical order.
+	•	"import/no-unresolved": "error",
+	•	"import/no-default-export": "off",
+	•	"no-console": ["warn", { "allow": ["warn", "error"] }],
+	•	"no-restricted-imports": [...] for lodash and moment.
+	•	"@typescript-eslint/no-explicit-any": "error",
+	•	"@typescript-eslint/explicit-function-return-type": [...],
+	•	"@typescript-eslint/consistent-type-imports": [...].
+	•	Configure the import resolver to reference tsconfig.json.
+	•	Include inline comments.
+
+────────────────────────────
+Database & Persistence:
+	6.	prisma/schema.prisma (/prisma)
+	•	Create a fully detailed Prisma schema defining models:
+	•	User: id (cuid, primary), name, unique email, hashed password, emailVerified, image, role (default STUDENT), createdAt, updatedAt, and relations to Account, Session, Authenticator, Enrollment, ModuleCompletion, ExamAttempt, Certificate, Payment.
+	•	Account: composite primary key using provider and providerAccountId; fields: userId, type, provider, refresh_token, access_token, expires_at, token_type, scope, id_token, session_state, createdAt, updatedAt; relation to User.
+	•	Session: sessionToken (unique), userId, expires, createdAt, updatedAt; relation to User.
+	•	VerificationToken: composite key [identifier, token], expires.
+	•	Course: id (uuid, primary), title, unique slug, description, price (default 29900), createdAt, updatedAt; relations to Topic, Exam, Enrollment.
+	•	Topic: id (uuid, primary), title, courseId, order, createdAt; relation to Module.
+	•	Module: id (uuid, primary), title, content, topicId, order, createdAt.
+	•	Enrollment: id (uuid, primary), userId, courseId, enrollmentDate (default now), startDate, purchasedVouchers, usedTestVouchers, createdAt; relations to ModuleCompletion, ExamAttempt, Payment.
+	•	ModuleCompletion: id (uuid, primary), userId, enrollmentId, moduleId, completedAt (default now).
+	•	Exam: id (uuid, primary), courseId, passScore (default 80), createdAt; relations to Question, ExamAttempt.
+	•	Question: id (uuid, primary), examId, text, options (JSON array of exactly 4 options), correctIndex (default 0), order, createdAt.
+	•	ExamAttempt: id (uuid, primary), userId, enrollmentId, examId, score, passed, answers (JSON mapping question IDs to selected answer indices), createdAt.
+	•	Role enum: ADMIN, STUDENT.
+	•	Include detailed inline comments for relationships and constraints.
+	•	No barrel file required in /prisma.
+
+────────────────────────────
+Application & UI Files (Under /src/app):
+	7.	globals.css (/src/app)
+	•	Write a globals.css file that includes:
+	•	@tailwind base;, @tailwind components;, and @tailwind utilities;
+	•	Global resets, typography settings, and dark mode styles.
+	•	Inline comments for clarity.
+	8.	layout.tsx (/src/app)
+	•	Create a RootLayout component in layout.tsx that:
+	•	Imports globals.css.
+	•	Exports a default component that returns a complete HTML structure in TSX:
+	•	<html lang="en"> with a <head> containing meta tags (charset, viewport, description, title) and a <body> wrapping {children}.
+	•	Includes error boundaries or a fallback UI (with try‑catch and an ErrorBoundary component).
+	•	Optionally wraps the application in a ThemeProvider for dark mode.
+	•	Inline comments must specify external dependencies (e.g., /src/app/globals.css).
+	9.	page.tsx (Homepage, /src/app)
+	•	Write a HomePage component that:
+	•	Displays a distraction‑free interface (avoid “lifetime access” language).
+	•	Includes navigation links to /courseroute/courselist, /about, and /contact.
+	•	Handles data fetching errors with fallback UIs.
+	•	Uses Tailwind CSS for responsive styling.
+	•	Includes inline comments and testing instructions.
+	10.	Course Catalog – page.tsx (/src/app/courseroute/courselist)
+	•	Create a CourseCatalog component that:
+	•	Uses Next.js data fetching (SSR or SWR) to retrieve a list of courses from /src/lib/api.ts.
+	•	Renders each course’s title, description, and price.
+	•	Includes robust error handling and fallback UI.
+	•	Uses Tailwind CSS and inline comments referencing /src/lib/api.ts.
+	11.	Course Description – page.tsx (/src/app/courseroute/coursedescription/[id])
+	•	Develop a CourseDescription component that:
+	•	Uses Next.js’s useParams to read the course ID.
+	•	Fetches course details via /src/lib/api.ts.
+	•	Renders text‑based learning modules where each module shows a title, content, and a button “I have completed this module” that updates the completion status in the Zustand store (/src/store/courseStore.ts).
+	•	Provides an enrollment/purchase button with a dynamic payment link:
+	•	Import payment link mappings from /src/config/paymentLinks.ts (externalize payment links instead of hardcoding).
+	•	If course ID is "cmp", use Stripe URL: https://buy.stripe.com/cN24gT15K07Y8dG4gg.
+	•	If "rmp", use: https://buy.stripe.com/bIY3cP9Cg4oefG8eUW.
+	•	If "lsscp-yb", use: https://buy.stripe.com/28obJl4hW1c265y5kn.
+	•	If "lsscp-gb", use: https://buy.stripe.com/28ofZBcOsaMC9hKbIM.
+	•	If "lsscp-bb", use: https://buy.stripe.com/5kAdRt7u807Y65y6ot.
+	•	Otherwise, default to integrating with the API route at /api/stripe/checkout/route.ts.
+	•	Restrict final exam access until all modules are complete.
+	•	Implement error boundaries and SSR/hydration caching strategies.
+	•	Use Tailwind CSS and inline detailed comments.
+
+────────────────────────────
+UI Components (Under /src/app/components/ui):
+
+For each component, ensure the file begins with a filename comment (e.g., “// filename: Button.tsx”) and include robust error handling and inline testing instructions. Also, create an index.ts barrel file in this directory that re‑exports all components.
+	12.	Button.tsx (/src/app/components/ui)
+	•	Create a Button component that accepts props: label (string), onClick (function), variant (“primary” | “secondary” | “tertiary”), and an optional className.
+	•	Render a semantic <button> with proper aria attributes.
+	•	Use strict TypeScript and Tailwind CSS.
+	13.	Card.tsx (/src/app/components/ui)
+	•	Develop a Card component that accepts header (optional ReactNode), body (ReactNode), and footer (optional ReactNode).
+	•	Render a container with styled sections using Tailwind CSS and include error handling.
+	14.	Navbar.tsx (/src/app/components/ui)
+	•	Create a Navbar component that:
+	•	Renders dynamic links for public pages (”/”, “/courseroute/courselist”) and conditional links for authenticated users (”/admin/dashboard”, “/student/dashboard”).
+	•	Incorporates RBAC checks via middleware and logs navigation errors.
+	•	Uses Tailwind CSS and accessibility attributes.
+	15.	ProgressTracker.tsx (/src/app/components/ui)
+	•	Develop a ProgressTracker component that retrieves progress data from the Zustand store (/src/store/courseStore.ts) and displays “X of Y Modules Complete.”
+	•	Include error handling and inline comments.
+	16.	CourseModule.tsx (/src/app/components/ui)
+	•	Create a CourseModule component that accepts props: id (string), title (string), content (string), and order (number).
+	•	Render module details and include a button to update completion status in the Zustand store.
+	•	Use strict TSX and inline error logging.
+	17.	Exam.tsx (/src/app/components/ui)
+	•	Write an Exam component that:
+	•	Renders 100 questions, each with a text prompt and four multiple‑choice options.
+	•	Prevents submission until all questions are answered.
+	•	Calculates score upon submission (pass if score ≥80), with detailed error handling and inline tests.
+	•	Uses local state or Zustand as appropriate.
+	18.	CertificateDownload.tsx (/src/app/components/ui)
+	•	Develop a CertificateDownload component that:
+	•	Renders a button/link to generate a PDF certificate using a robust PDF library (e.g., pdf-lib or jsPDF).
+	•	Implements security measures (watermarking, digital signature, expiration).
+	•	Provides fallback UI if PDF generation fails.
+	•	Uses strict TypeScript and Tailwind CSS.
+	19.	CourseCreationCanvas.tsx (/src/app/components/ui)
+	•	Create a CourseCreationCanvas component for the admin panel that provides a WYSIWYG‑style interface:
+	•	Integrate a rich text editor (e.g., Slate or Quill) with explicit configuration instructions.
+	•	Include fields for course title, description, topics (with title and order), modules (with title, content, order), and exam details (100 questions with 4 options each).
+	•	Validate forms using Zod schemas from /src/lib/validations.ts.
+	•	Provide inline error handling and logging.
+
+Barrel File for /src/app/components/ui:
+Create an index.ts that includes:
+
+// filename: index.ts
+export * from "./Button";
+export * from "./Card";
+export * from "./Navbar";
+export * from "./ProgressTracker";
+export * from "./CourseModule";
+export * from "./Exam";
+export * from "./CertificateDownload";
+export * from "./CourseCreationCanvas";
+
+────────────────────────────
+Admin & Student Dashboards (Under /src/app/admin & /src/app/student):
+	20.	Admin Dashboard – page.tsx (/src/app/admin/dashboard)
+	•	Develop an AdminDashboard component that:
+	•	Is accessible only to admin users (enforced via authjs v5 middleware in /src/app/api/auth/[...auth]/route.ts).
+	•	Displays course management controls (link to /src/app/components/ui/CourseCreationCanvas.tsx), user statistics, payment summaries, and exam results.
+	•	Implements error boundaries, logging, and inline testing instructions.
+	•	Uses the global layout from /src/app/layout.tsx.
+	21.	Student Dashboard – page.tsx (/src/app/student/dashboard)
+	•	Write a StudentDashboard component that:
+	•	Displays authenticated student data (enrollment details, progress via /src/app/components/ui/ProgressTracker.tsx, exam attempt history).
+	•	Provides links for certificate downloads (linking to /src/app/components/ui/CertificateDownload.tsx).
+	•	Includes error handling for data retrieval and SSR/hydration strategies.
+	•	Uses responsive Tailwind CSS.
+
+────────────────────────────
+API Routes (Under /src/app/api):
+	22.	Authentication API – route.ts (/src/app/api/auth/[…auth])
+	•	Generate an API route for authentication using authjs v5 that:
+	•	Integrates with the Prisma adapter from /src/lib/prisma.ts.
+	•	Implements detailed middleware for token validation, session renewal, and RBAC enforcement.
+	•	Includes robust try‑catch blocks, logging via a library (e.g., pino), and returns proper HTTP status codes.
+	•	Inline comments must reference all external configurations.
+	23.	Stripe Checkout API – route.ts (/src/app/api/stripe/checkout)
+	•	Create an API route to handle Stripe checkout sessions:
+	•	Initiate checkout sessions for course purchases using dynamic payment links imported from /src/config/paymentLinks.ts.
+	•	Include error handling, logging, and secure processing.
+	•	Follow Next.js App Router API conventions and include inline documentation.
+
+────────────────────────────
+Library, Store, Utilities, and Config Files (Under /src/lib, /src/store, /src/utils, /src/config):
+	24.	prisma.ts (/src/lib)
+	•	Develop a prisma.ts helper that:
+	•	Instantiates and exports a singleton PrismaClient using environment variables (DATABASE_URL, DIRECT_URL).
+	•	Implements connection pooling if applicable.
+	•	Includes robust error handling and logging.
+	•	Barrel File: In /src/lib/index.ts, export prisma.ts (e.g., export * from "./prisma";).
+	25.	validations.ts (/src/lib)
+	•	Create a validations.ts file using Zod to define strict schemas for:
+	•	User registration,
+	•	Course creation (topics, modules, exam details),
+	•	Exam submission,
+	•	Module completion.
+	•	Include detailed inline error messages and documentation.
+	•	Barrel File: Ensure /src/lib/index.ts exports validations.ts.
+	26.	courseStore.ts (/src/store)
+	•	Write a Zustand store to manage course progress (completed modules, total modules, exam status, enrollment details).
+	•	Include strict typing, inline tests, and error handling.
+	•	Barrel File: In /src/store/index.ts, re-export courseStore.ts along with any additional stores.
+	27.	userStore.ts (/src/store)
+	•	Create a Zustand store to manage authenticated user data (id, name, email, role, session data).
+	•	Use strict TypeScript and inline documentation.
+	•	Ensure /src/store/index.ts exports userStore.ts.
+	28.	format.ts (/src/utils)
+	•	Write a utility file with helper functions:
+	•	formatDate(date: Date): string for formatting dates.
+	•	formatCurrency(cents: number): string for converting cents to dollars.
+	•	Include inline documentation and tests.
+	•	Barrel File: In /src/utils/index.ts, re-export format.ts.
+	29.	paymentLinks.ts (/src/config)
+	•	Create a paymentLinks.ts file that exports an object mapping course IDs to Stripe payment URLs:
+	•	"cmp": "https://buy.stripe.com/cN24gT15K07Y8dG4gg",
+	•	"rmp": "https://buy.stripe.com/bIY3cP9Cg4oefG8eUW",
+	•	"lsscp-yb": "https://buy.stripe.com/28obJl4hW1c265y5kn",
+	•	"lsscp-gb": "https://buy.stripe.com/28ofZBcOsaMC9hKbIM",
+	•	"lsscp-bb": "https://buy.stripe.com/5kAdRt7u807Y65y6ot".
+	•	Inline comments must document usage.
+	•	Barrel File: In /src/config/index.ts, re-export paymentLinks.ts.
+
+────────────────────────────
+Environment and Documentation:
+	30.	.env.local (Root)
+	•	Draft a production‑ready .env.local (do not commit) containing:
+	•	DATABASE_URL and DIRECT_URL with placeholders.
+	•	STRIPE_SECRET_KEY.
+	•	Any additional secrets for authjs and integrations.
+	•	Each variable must have an inline comment explaining its purpose.
+	31.	README.md (Root)
+	•	Write a comprehensive README.md that includes:
+	•	An overview of NSBS (without “lifetime access”).
+	•	Detailed setup instructions:
+	•	Installing dependencies,
+	•	Configuring .env.local,
+	•	Running Prisma migrations (npx prisma migrate dev --name "init"),
+	•	Generating Prisma client (npx prisma generate),
+	•	Seeding the database (npx prisma db seed),
+	•	Running tests (unit, integration, E2E),
+	•	Starting the development server.
+	•	A summary of the technology stack (Next.js, React, TypeScript, Tailwind CSS, Prisma, authjs v5, Supabase, etc.).
+	•	Testing strategy (using Jest, React Testing Library, and/or Cypress).
+	•	Logging, performance monitoring, and caching strategies.
+	•	Architectural diagrams or detailed explanations for RBAC, exam handling, certificate generation, and payment integration.
+	•	Contributing guidelines and coding standards.
+	•	Include inline documentation and links to additional documentation if needed.
+
+────────────────────────────
+Final Notes:
+	•	Every file must be thoroughly documented with inline comments explaining the purpose, logic, and external dependencies.
+	•	Ensure robust error handling (try‑catch blocks, fallback UIs, ErrorBoundary components) is implemented across components and API routes.
+	•	Use SSR, hydration, and caching strategies (SWR or Next.js data fetching methods) for all data fetching operations.
+	•	Integrate logging (using libraries like pino or winston) in all API routes and critical components.
+	•	All directories containing more than one file (e.g., /src/app/components/ui, /src/lib, /src/store, /src/utils, /src/config) must have an index.ts barrel file that re‑exports all named exports from that directory.
+
+────────────────────────────
+This single, absolute, and fully detailed prompt should be used to generate every file in the NSBS project with no ambiguity, ensuring a production‑ready, well‑structured, and thoroughly documented codebase.

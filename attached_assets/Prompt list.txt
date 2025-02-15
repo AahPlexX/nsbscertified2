@@ -1,0 +1,3449 @@
+Meticulously, one-by-one (in the order listed) fulfill each prompt by responding with the dedicated (immediately used in production script)
+
+General Instructions for Each File Prompt:
+
+File Path Comment: Each generated file must start with a comment indicating its relative path (e.g., // filename: /src/app/page.tsx).
+
+Barrel Files (index.ts): For directories containing multiple files (e.g., /src/app/components/ui, /src/lib, /src/store, /src/utils, /src/config), create an index.ts barrel file that re-exports all named exports from that directory. Ensure proper re-exporting to avoid import ambiguities.
+
+TypeScript and TSX: All code must be written exclusively in TypeScript (.ts) or TSX (.tsx). Do not generate .js, .jsx, or .mjs files.
+
+Strict Typing: Use strict TypeScript with explicit types. Avoid using any type.
+
+S.O.L.I.D Principles: Adhere to S.O.L.I.D principles in code design and implementation.
+
+Inline Documentation: Include extensive inline comments to explain the purpose, logic, and external dependencies within each file. Use JSDoc style for function and component documentation.
+
+Error Handling: Implement robust error handling using try-catch blocks, fallback UIs, and ErrorBoundary components where appropriate. Log errors appropriately.
+
+SSR/Hydration & Caching: Utilize SSR (Server-Side Rendering), hydration, and caching strategies (SWR or Next.js data fetching methods) for all data fetching operations to optimize performance and user experience.
+
+Link Element Effects: Implement visual feedback (e.g., a subtle ripple effect or color change) when users click on links or interactive elements to enhance user experience.
+
+JWT Tokenization: Understand that while JWT is not explicitly handled in application code in many places, authjs v5 uses JWT for session management. Ensure authentication middleware and API routes respect and validate session tokens appropriately as managed by authjs.
+
+Production-Ready Standards: All code must be written to production-ready standards (≥ 08/2024).
+
+No Docker: Do not include any Docker-related instructions or configurations.
+
+No LLM-Unperformable Instructions: Instructions should be actionable and within the capabilities of an LLM.
+
+No Truncation: Ensure all instructions are complete and not truncated.
+
+No Conflicting Instructions: All instructions must be consistent and non-contradictory.
+
+File 1: package.json (Root)
+
+// filename: /package.json
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Create a complete package.json file at the root of the project with the following specifications:
+
+Project Information:
+
+"name": "nsbs"
+
+"version": "1.0.0"
+
+"private": true
+
+Scripts: Define the following scripts:
+
+"dev": "cross-env NODE_ENV=development next dev" - For development server.
+
+"build": "cross-env NODE_ENV=production next build" - For production build.
+
+"start": "cross-env NODE_ENV=production next start" - For starting production server.
+
+"lint": "next lint" - For running ESLint.
+
+"format": "prettier --write ." - For formatting code with Prettier.
+
+"type-check": "tsc --noEmit" - For TypeScript type checking.
+
+"prepare": "husky install" - For Husky setup on npm install.
+
+"validate": "npm run lint && npm run type-check && npm run format" - For running all validation checks.
+
+"clean": "rm -rf .next node_modules" - For cleaning build artifacts and node modules.
+
+"test": "jest" - For running unit tests with Jest. Include placeholder even if testing framework isn't immediately implemented.
+
+"e2e-test": "cypress run" - For running end-to-end tests with Cypress. Include placeholder even if testing framework isn't immediately implemented.
+
+Dependencies: Include the following dependencies and ensure they are the latest versions as of August 2024 or later:
+
+"next": "^15.1.7"
+
+"react": "^19.0.0"
+
+"react-dom": "^19.0.0"
+
+"typescript": "^5.7.2"
+
+"tailwindcss": "^4.0.6"
+
+"autoprefixer": "latest"
+
+"zod": "latest"
+
+"zustand": "latest"
+
+"@prisma/client": "latest"
+
+"auth": "^5.0.0"
+
+"@auth/core": "^1.0.0"
+
+"@auth/prisma-adapter": "^1.0.0"
+
+"bcryptjs": "^2.4.3"
+
+"clsx": "^2.0.0"
+
+"lucide-react": "^1.0.0"
+
+"tailwind-merge": "^2.0.0"
+
+"tailwindcss-animate": "^1.0.0"
+
+DevDependencies: Include the following devDependencies and ensure they are the latest versions as of August 2024 or later:
+
+"@eslint/eslintrc": "^3.0.0"
+
+"@next/eslint-plugin-next": "^13.2.4"
+
+"@types/node": "^22.0.0"
+
+"@types/react": "^19.0.0"
+
+"@types/react-dom": "^19.0.0"
+
+"cross-env": "^7.0.3"
+
+"eslint": "^9.0.0"
+
+"eslint-config-next": "^15.1.7"
+
+"eslint-config-prettier": "^9.1.0"
+
+"eslint-plugin-import": "^2.29.0"
+
+"eslint-plugin-prettier": "^5.2.1"
+
+"husky": "^8.0.0"
+
+"lint-staged": "^14.0.0"
+
+"postcss": "^8.4.35"
+
+"prettier": "^3.1.0"
+
+"prisma": "^5.7.2"
+
+"ts-node": "^10.9.1"
+
+Husky Configuration: Configure Husky for pre-commit hook to run lint-staged.
+
+"husky": { "hooks": { "pre-commit": "lint-staged" } }
+
+Lint-Staged Configuration: Configure lint-staged to run Prettier, ESLint, and TypeScript type check on staged files.
+
+"lint-staged": { "*.{ts,tsx,js,jsx,json,css,md}": [ "prettier --write", "eslint --fix", "tsc --noEmit" ] }
+
+Prisma Seed Script: Configure Prisma seed script to use ts-node prisma/seed.ts.
+
+"prisma": { "seed": "ts-node prisma/seed.ts" }
+
+Validation Points:
+
+Verify that all specified dependencies and devDependencies are included with correct versions.
+
+Check that all scripts are defined correctly and will execute the intended commands.
+
+Confirm that Husky and lint-staged configurations are set up to enforce code quality checks on commit.
+
+Ensure the Prisma seed script is correctly configured.
+
+Success Criteria:
+
+package.json file is created with all specified configurations.
+
+Running npm install should install all dependencies without errors.
+
+Scripts in package.json should be executable via npm run <script-name>.
+
+Husky and lint-staged should be correctly configured to run pre-commit checks.
+
+Documentation:
+
+Add inline comments within package.json to explain the purpose of each script, dependency, and configuration section.
+
+File 2: next.config.ts (Root)
+
+// filename: /next.config.ts
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Create a production-ready next.config.ts file at the root of the project:
+
+Import NextConfig type: Import NextConfig from "next".
+
+Basic Configuration:
+
+reactStrictMode: true - Enable React Strict Mode for development.
+
+swcMinify: true - Enable SWC minification for production builds.
+
+Experimental Options:
+
+experimental: { serverActions: true, appDir: true } - Enable server actions and App Router.
+
+TypeScript Configuration:
+
+typescript: { ignoreBuildErrors: false } - Do not ignore TypeScript build errors.
+
+ESLint Configuration:
+
+eslint: { ignoreDuringBuilds: false } - Do not ignore ESLint errors during builds.
+
+Images Configuration:
+
+images: { domains: ["yourdomain.com", "res.cloudinary.com"] } - Specify allowed image domains. Replace "yourdomain.com" with the actual domain.
+
+Error Handling: Include comments about potential runtime configuration errors and strategies to handle them if necessary.
+
+Validation Points:
+
+Verify that the file is written in TypeScript (.ts).
+
+Check that all configurations are set as specified.
+
+Ensure that experimental features are correctly enabled.
+
+Confirm image domains are properly configured.
+
+Success Criteria:
+
+next.config.ts file is created with all specified configurations.
+
+Next.js application starts in strict mode.
+
+Server Actions and App Router features are enabled.
+
+Image optimization is configured for specified domains.
+
+TypeScript and ESLint errors will prevent builds.
+
+Documentation:
+
+Add inline comments explaining each configuration option in next.config.ts.
+
+Document the purpose of each setting and its impact on the application.
+
+File 3: tsconfig.json (Root)
+
+// filename: /tsconfig.json
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Generate a tsconfig.json file at the root of the project with strict TypeScript settings:
+
+Compiler Options:
+
+"target": "ESNext" - Target latest ECMAScript version.
+
+"module": "ESNext" - Use ECMAScript modules.
+
+"lib": ["DOM", "ESNext"] - Include DOM and ESNext libraries.
+
+"jsx": "preserve" - Preserve JSX syntax for Next.js to handle.
+
+"strict": true - Enable all strict type checking options.
+
+"strictNullChecks": true - Enable strict null checks.
+
+"noImplicitAny": true - Disallow implicit any types.
+
+"esModuleInterop": true - Allow interoperability between CommonJS and ES modules.
+
+"skipLibCheck": true - Skip type checking of declaration files to speed up compilation.
+
+"forceConsistentCasingInFileNames": true - Enforce consistent casing in file names.
+
+"moduleResolution": "bundler" - Use bundler-compatible module resolution.
+
+"allowJs": false - Disallow JavaScript files in the TypeScript project.
+
+Base URL and Path Aliases:
+
+"baseUrl": "." - Set base URL to the root directory.
+
+"paths": { "@components/*": ["./src/app/components/ui/*"], "@lib/*": ["./src/lib/*"], "@hooks/*": ["./src/hooks/*"], "@utils/*": ["./src/utils/*"], "@store/*": ["./src/store/*"] } - Define path aliases for easier imports.
+
+Include and Exclude:
+
+"include": ["src/**/*"] - Include all files under the src directory.
+
+"exclude": ["node_modules", "dist", ".next"] - Exclude node modules, dist, and .next directories.
+
+Validation Points:
+
+Verify the file is valid JSON and follows the tsconfig.json schema.
+
+Check that all compiler options are set as specified, especially strict mode options.
+
+Confirm that path aliases are correctly defined to match the project structure.
+
+Ensure include and exclude arrays correctly target source files and exclude build artifacts.
+
+Success Criteria:
+
+tsconfig.json file is created with all specified configurations.
+
+TypeScript compiler uses these settings when building the project.
+
+Path aliases are correctly resolved during module imports.
+
+Strict type checking is enforced across the project.
+
+Documentation:
+
+Add inline comments within tsconfig.json explaining the purpose of each compiler option and path alias.
+
+Document the benefits of each strict mode setting.
+
+File 4: tailwind.config.ts (Root)
+
+// filename: /tailwind.config.ts
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Produce a tailwind.config.ts file at the root of the project with custom theme and plugins:
+
+Dark Mode Configuration:
+
+darkMode: ["class"] - Enable dark mode based on CSS class.
+
+Content Paths:
+
+content: ["./src/pages/**/*.{ts,tsx,mdx}", "./src/app/**/*.{ts,tsx,mdx}", "./src/app/components/ui/**/*.{ts,tsx,mdx}"] - Specify paths to all files that use Tailwind CSS classes.
+
+Theme Extension:
+
+theme: { extend: { colors: { ... }, borderRadius: { ... } } } - Extend the default Tailwind theme:
+
+Custom Colors: Define NSBS custom color palette: mattes, black, gray, slate, tan, white. Use descriptive names for color shades if necessary (e.g., slate-50, slate-100, etc.). Define these color variables in globals.css as CSS variables for Tailwind to access.
+
+Border Radius Values: Define custom borderRadius values: lg, md, sm. Use CSS variables defined in globals.css for these as well.
+
+Plugins:
+
+plugins: [require("tailwindcss-animate"), plugin(({ addVariant }) => { addVariant("supports-hover", "@media (hover: hover)) })] - Include plugins:
+
+tailwindcss-animate for animations.
+
+Custom plugin to add a supports-hover variant using @media (hover: hover).
+
+Validation Points:
+
+Verify the file is valid TypeScript (.ts).
+
+Check that dark mode and content paths are correctly configured.
+
+Confirm that the theme is extended with custom colors and border radii.
+
+Ensure both tailwindcss-animate and the custom supports-hover plugins are included.
+
+Verify that custom colors and border radii are referenced as CSS variables, assuming they are defined in globals.css.
+
+Success Criteria:
+
+tailwind.config.ts file is created with all specified configurations.
+
+Tailwind CSS correctly applies styles based on this configuration.
+
+Custom colors and border radii are available for use in Tailwind classes.
+
+tailwindcss-animate and supports-hover variants are functional.
+
+Documentation:
+
+Add inline comments in tailwind.config.ts to explain each section and configuration option.
+
+Document the custom color palette and border radii values.
+
+Explain the purpose of each plugin and the supports-hover variant.
+
+Reference where the CSS variables for colors and border radii should be defined (i.e., globals.css).
+
+File 5: eslint.config.ts (Root)
+
+// filename: /eslint.config.ts
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Develop a complete eslint.config.ts file at the root of the project for linting and code quality:
+
+Extend Next.js ESLint Configuration:
+
+Use FlatCompat to extend "next/core-web-vitals" configuration.
+
+Ignore Directories:
+
+ignores: ["node_modules", "dist", ".next", "build"] - Ignore specified directories from linting.
+
+Plugins:
+
+plugins: ["@typescript-eslint", "unused-imports", "import", "prettier"] - Include the following ESLint plugins:
+
+@typescript-eslint/parser for TypeScript support.
+
+eslint-plugin-unused-imports to remove unused imports.
+
+eslint-plugin-import for import ordering and rules.
+
+eslint-plugin-prettier for Prettier integration.
+
+Rules: Enforce the following rules:
+
+"prettier/prettier": "error" - Report Prettier formatting issues as errors.
+
+"unused-imports/no-unused-imports": "error" - Report and fix unused imports.
+
+"unused-imports/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }] - Warn for unused variables, but ignore variables starting with _.
+
+"import/order": [...] - Configure import ordering rules:
+
+groups: ["builtin", "external", "internal", "parent", "sibling", "index"] - Define import groups.
+
+newlines-between: "always" - Enforce newlines between import groups.
+
+alphabetize: { "order": "asc", "caseInsensitive": true } - Alphabetize imports within groups (ascending, case-insensitive).
+
+"import/no-unresolved": "error" - Ensure all imports resolve correctly.
+
+"import/no-default-export": "off" - Allow default exports.
+
+"no-console": ["warn", { "allow": ["warn", "error"] }] - Allow console.warn and console.error, but warn for other console usages.
+
+"no-restricted-imports": [...] - Restrict imports of specific libraries:
+
+paths: [{ name: "lodash", message: "Use native JS methods or Lodash-es." }, { name: "moment", message: "Use date-fns or Temporal API instead." }] - Disallow lodash and moment, suggesting alternatives.
+
+"@typescript-eslint/no-explicit-any": "error" - Disallow any type.
+
+"@typescript-eslint/explicit-function-return-type": [...] - Enforce explicit return types for functions:
+
+"error"
+
+{ allowExpressions: true, allowConciseArrowFunctionExpressionsStartingWithVoid: true } - Allow return type inference for expressions and concise arrow functions returning void.
+
+"@typescript-eslint/consistent-type-imports": [...] - Enforce consistent type imports:
+
+"error"
+
+{ prefer: "type-imports", disallowTypeAnnotations: false } - Prefer type import and allow type annotations in imports.
+
+Import Resolver Settings:
+
+settings: { "import/resolver": { typescript: { project: "./tsconfig.json" } } } - Configure import resolver to use tsconfig.json for path aliases.
+
+Validation Points:
+
+Verify the file is valid JavaScript (.js) as eslint.config.js or TypeScript (.ts) as eslint.config.ts.
+
+Check that all plugins and rules are correctly configured as specified.
+
+Confirm that import ordering and restricted imports are set up.
+
+Ensure TypeScript-specific ESLint rules are enabled and configured for strict type checking.
+
+Verify import resolver settings are correctly pointing to tsconfig.json.
+
+Success Criteria:
+
+eslint.config.ts file is created with all specified configurations.
+
+ESLint runs without configuration errors.
+
+Linting rules are enforced during development and build processes.
+
+Code formatting is enforced by Prettier through ESLint.
+
+Import ordering and restricted imports are enforced.
+
+TypeScript-specific linting rules are active and effective.
+
+Documentation:
+
+Add inline comments in eslint.config.ts to explain each plugin, rule, and setting.
+
+Document the rationale behind each rule and its contribution to code quality and consistency.
+
+Explain how to run ESLint and fix linting errors.
+
+File 6: prisma/schema.prisma (/prisma)
+
+// filename: /prisma/schema.prisma
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Create a detailed Prisma schema file (schema.prisma) in the /prisma directory defining the database models for the NSBS platform.
+
+Data Source and Generator:
+
+Specify PostgreSQL as the provider in the datasource block.
+
+Use env("DATABASE_URL") and env("DIRECT_URL") for database connection URLs.
+
+Define a generator block using prisma-client-js as the provider.
+
+Models: Define the following Prisma models with fields, data types, attributes, and relations as described below. Include detailed inline comments for relationships and constraints.
+
+User Model:
+
+id (String, @id, @default(cuid()), primary key) - Unique identifier.
+
+name (String, optional) - User's full name.
+
+email (String, @unique, optional) - Unique email address.
+
+password (String, optional) - Hashed password for credential login.
+
+emailVerified (DateTime, optional) - Date when email was verified.
+
+image (String, optional) - Profile image URL.
+
+role (Role enum, @default(STUDENT)) - User role (ADMIN or STUDENT).
+
+accounts (Account[], relation) - Relation to Account model (one-to-many).
+
+sessions (Session[], relation) - Relation to Session model (one-to-many).
+
+authenticator (Authenticator[], relation) - Relation to Authenticator model (one-to-many).
+
+enrollments (Enrollment[], relation) - Relation to Enrollment model (one-to-many).
+
+completions (ModuleCompletion[], relation) - Relation to ModuleCompletion model (one-to-many).
+
+attempts (ExamAttempt[], relation) - Relation to ExamAttempt model (one-to-many).
+
+certificates (Certificate[], relation) - Relation to Certificate model (one-to-many).
+
+payments (Payment[], relation) - Relation to Payment model (one-to-many).
+
+createdAt (DateTime, @default(now())) - Creation timestamp.
+
+updatedAt (DateTime, @updatedAt) - Last update timestamp.
+
+Account Model:
+
+userId (String) - Foreign key to User model.
+
+type (String) - Account type (e.g., "oauth", "credentials").
+
+provider (String) - OAuth provider name (e.g., "google", "facebook").
+
+providerAccountId (String) - Provider account ID.
+
+refresh_token (String, optional) - OAuth refresh token.
+
+access_token (String, optional) - OAuth access token.
+
+expires_at (Int, optional) - Token expiration timestamp.
+
+token_type (String, optional) - Token type (e.g., "Bearer").
+
+scope (String, optional) - OAuth scope.
+
+id_token (String, optional) - OAuth ID token.
+
+session_state (String, optional) - OAuth session state.
+
+user (User, @relation(fields: [userId], references: [id], onDelete: Cascade)) - Relation to User model (many-to-one, cascade delete).
+
+createdAt (DateTime, @default(now())) - Creation timestamp.
+
+updatedAt (DateTime, @updatedAt) - Last update timestamp.
+
+@@id([provider, providerAccountId]) - Composite primary key using provider and providerAccountId.
+
+Session Model:
+
+sessionToken (String, @unique) - Unique session token.
+
+userId (String) - Foreign key to User model.
+
+expires (DateTime) - Session expiration date.
+
+user (User, @relation(fields: [userId], references: [id], onDelete: Cascade)) - Relation to User model (many-to-one, cascade delete).
+
+createdAt (DateTime, @default(now())) - Creation timestamp.
+
+updatedAt (DateTime, @updatedAt) - Last update timestamp.
+
+VerificationToken Model:
+
+identifier (String) - Identifier (e.g., email).
+
+token (String) - Verification token.
+
+expires (DateTime) - Token expiration date.
+
+@@id([identifier, token]) - Composite primary key using identifier and token.
+
+Course Model:
+
+id (String, @id, @default(uuid()), primary key) - Unique identifier.
+
+title (String) - Course title.
+
+slug (String, @unique) - Unique slug for URL.
+
+description (String) - Course description.
+
+price (Int, @default(29900)) - Course price in cents (default $299.00).
+
+topics (Topic[], relation) - Relation to Topic model (one-to-many).
+
+materials (CourseMaterial[], relation) - Relation to CourseMaterial model (one-to-many).
+
+exam (Exam, relation, optional) - Relation to Exam model (one-to-one, optional).
+
+enrollments (Enrollment[], relation) - Relation to Enrollment model (one-to-many).
+
+createdAt (DateTime, @default(now())) - Creation timestamp.
+
+updatedAt (DateTime, @updatedAt) - Last update timestamp.
+
+Topic Model:
+
+id (String, @id, @default(uuid()), primary key) - Unique identifier.
+
+title (String) - Topic title.
+
+courseId (String) - Foreign key to Course model.
+
+course (Course, @relation(fields: [courseId], references: [id])) - Relation to Course model (many-to-one).
+
+modules (Module[], relation) - Relation to Module model (one-to-many).
+
+order (Int) - Order of the topic within the course.
+
+createdAt (DateTime, @default(now())) - Creation timestamp.
+
+Module Model:
+
+id (String, @id, @default(uuid()), primary key) - Unique identifier.
+
+title (String) - Module title.
+
+content (String) - Module content (text-based).
+
+topicId (String) - Foreign key to Topic model.
+
+topic (Topic, @relation(fields: [topicId], references: [id])) - Relation to Topic model (many-to-one).
+
+order (Int) - Order of the module within the topic.
+
+createdAt (DateTime, @default(now())) - Creation timestamp.
+
+Enrollment Model:
+
+id (String, @id, @default(uuid()), primary key) - Unique identifier.
+
+userId (String) - Foreign key to User model.
+
+user (User, @relation(fields: [userId], references: [id])) - Relation to User model (many-to-one).
+
+courseId (String) - Foreign key to Course model.
+
+course (Course, @relation(fields: [courseId], references: [id])) - Relation to Course model (many-to-one).
+
+enrollmentDate (DateTime, @default(now())) - Date of enrollment.
+
+startDate (DateTime, optional) - Course start date (can be set later).
+
+purchasedVouchers (Int, @default(0)) - Number of purchased exam vouchers.
+
+usedTestVouchers (Int, @default(0)) - Number of used exam vouchers.
+
+completions (ModuleCompletion[], relation) - Relation to ModuleCompletion model (one-to-many).
+
+attempts (ExamAttempt[], relation) - Relation to ExamAttempt model (one-to-many).
+
+payments (Payment[], relation) - Relation to Payment model (one-to-many).
+
+createdAt (DateTime, @default(now())) - Creation timestamp.
+
+ModuleCompletion Model:
+
+id (String, @id, @default(uuid()), primary key) - Unique identifier.
+
+userId (String) - Foreign key to User model.
+
+user (User, @relation(fields: [userId], references: [id])) - Relation to User model (many-to-one).
+
+enrollmentId (String) - Foreign key to Enrollment model.
+
+enrollment (Enrollment, @relation(fields: [enrollmentId], references: [id])) - Relation to Enrollment model (many-to-one).
+
+moduleId (String) - Foreign key to Module model.
+
+module (Module, @relation(fields: [moduleId], references: [id])) - Relation to Module model (many-to-one).
+
+completedAt (DateTime, @default(now())) - Timestamp when module was completed.
+
+Exam Model:
+
+id (String, @id, @default(uuid()), primary key) - Unique identifier.
+
+courseId (String) - Foreign key to Course model.
+
+course (Course, @relation(fields: [courseId], references: [id])) - Relation to Course model (many-to-one).
+
+passScore (Int, @default(80)) - Passing score for the exam (default 80%).
+
+questions (Question[], relation) - Relation to Question model (one-to-many).
+
+attempts (ExamAttempt[], relation) - Relation to ExamAttempt model (one-to-many).
+
+createdAt (DateTime, @default(now())) - Creation timestamp.
+
+Question Model:
+
+id (String, @id, @default(uuid()), primary key) - Unique identifier.
+
+examId (String) - Foreign key to Exam model.
+
+exam (Exam, @relation(fields: [examId], references: [id])) - Relation to Exam model (many-to-one).
+
+text (String) - Question text.
+
+options (Json) - JSON array of exactly 4 options (e.g., ["Option A", "Option B", "Option C", "Option D"]). Use Prisma Json type.
+
+correctIndex (Int, @default(0)) - Index of the correct option (0-indexed).
+
+order (Int) - Order of the question in the exam.
+
+createdAt (DateTime, @default(now())) - Creation timestamp.
+
+ExamAttempt Model:
+
+id (String, @id, @default(uuid()), primary key) - Unique identifier.
+
+userId (String) - Foreign key to User model.
+
+user (User, @relation(fields: [userId], references: [id])) - Relation to User model (many-to-one).
+
+enrollmentId (String) - Foreign key to Enrollment model.
+
+enrollment (Enrollment, @relation(fields: [enrollmentId], references: [id])) - Relation to Enrollment model (many-to-one).
+
+examId (String) - Foreign key to Exam model.
+
+exam (Exam, @relation(fields: [examId], references: [id])) - Relation to Exam model (many-to-one).
+
+score (Int, optional) - Exam score.
+
+passed (Boolean, optional) - Indicates if the exam was passed.
+
+answers (Json, optional) - JSON object mapping question IDs to selected answer indices (e.g., {questionId: selectedIndex}). Use Prisma Json type.
+
+createdAt (DateTime, @default(now())) - Attempt timestamp.
+
+Role Enum:
+
+enum Role { ADMIN, STUDENT } - Define an enum for user roles.
+
+Inline Comments: Include detailed inline comments explaining each model, field, relationship, and constraint. Focus on clarity and database schema understanding.
+
+Validation Points:
+
+Verify that the file is valid Prisma schema syntax (.prisma).
+
+Check that all models, fields, data types, and attributes are defined as specified.
+
+Confirm that all relationships between models are correctly defined with proper relation attributes (@relation, fields, references, onDelete).
+
+Ensure that unique constraints (@unique), primary keys (@id), default values (@default), and enums are correctly implemented.
+
+Validate that JSON types are used for Question.options and ExamAttempt.answers.
+
+Success Criteria:
+
+schema.prisma file is created with all models and configurations as specified.
+
+Prisma schema is valid and can be used to generate Prisma Client without errors (using npx prisma generate).
+
+Database migrations can be created based on this schema (using npx prisma migrate dev).
+
+Inline comments are comprehensive and clearly explain the schema structure.
+
+Documentation:
+
+Add inline comments within schema.prisma to document each model, field, and relation.
+
+Explain the purpose of each model and its role in the NSBS platform.
+
+Document the data types, attributes, and constraints for each field.
+
+Clearly describe the relationships between models (one-to-many, many-to-one, one-to-one) and their implications.
+
+File 7: globals.css (/src/app)
+
+// filename: /src/app/globals.css
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Write a globals.css file in the /src/app directory to set up global styles for the NSBS platform.
+
+Tailwind Directives: Include Tailwind CSS directives:
+
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+Global Resets: Implement global CSS resets to normalize styles across browsers. This should include resets for margins, paddings, box-sizing, and basic element styling.
+
+Typography Settings: Define global typography settings using CSS variables for font families, font sizes, line heights, and text colors. Ensure these settings align with the NSBS brand and readability.
+
+Dark Mode Styles: Implement dark mode styles using CSS variables and the dark: variant. Define styles for background color, text color, and other elements for dark mode. Ensure contrast and accessibility in dark mode.
+
+Custom Color Variables: Define CSS variables for the NSBS custom color palette (mattes, black, gray, slate, tan, white) to be used throughout the application and in Tailwind configuration.
+
+Custom Border Radius Variables: Define CSS variables for the custom border radius values (lg, md, sm) to be used in Tailwind configuration.
+
+Global Link Styles: Define default styles for links, including hover effects and link effects after click (e.g., a subtle ripple effect or color change on click).
+
+Validation Points:
+
+Verify the file is valid CSS (.css).
+
+Check that Tailwind directives are included.
+
+Confirm global resets are implemented effectively.
+
+Ensure typography settings are defined using CSS variables and are readable.
+
+Verify dark mode styles are implemented using CSS variables and the dark: variant, ensuring good contrast and accessibility.
+
+Check that custom color and border radius CSS variables are defined and named according to the NSBS color scheme and sizes.
+
+Validate global link styles and link click effects are implemented.
+
+Success Criteria:
+
+globals.css file is created with all specified styles and configurations.
+
+Global styles are applied correctly across the application.
+
+CSS resets normalize browser styles.
+
+Typography settings ensure consistent and readable text.
+
+Dark mode is functional and visually consistent.
+
+Custom color and border radius variables are defined and accessible in Tailwind.
+
+Global link styles and click effects are applied.
+
+Documentation:
+
+Add inline comments in globals.css to explain each section of styles, CSS variables, and their purpose.
+
+Document the NSBS color palette and border radius values defined as CSS variables.
+
+Explain the implementation of dark mode and global resets.
+
+Document the link click effects and their implementation.
+
+File 8: layout.tsx (/src/app)
+
+// filename: /src/app/layout.tsx
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Create a RootLayout component in layout.tsx within the /src/app directory to define the application's root layout.
+
+"use client" directive: Add "use client" directive at the top of the file as this is a client component due to its role as a layout.
+
+Import globals.css: Import globals.css to apply global styles.
+
+RootLayout Component: Define a default exported functional component RootLayout that accepts children: React.ReactNode as props.
+
+HTML Structure: Return a complete HTML structure in TSX:
+
+<html lang="en"> - Root HTML element with language set to English.
+
+<head> - Head section:
+
+<meta charset="utf-8" /> - Character set meta tag.
+
+<meta name="viewport" content="width=device-width, initial-scale=1" /> - Viewport meta tag for responsiveness.
+
+<meta name="description" content="National Society of Business Sciences (NSBS) - Online Learning Platform" /> - Description meta tag.
+
+<title>National Society of Business Sciences</title> - Default title for the application.
+
+<body> - Body section:
+
+{children} - Render the child components (application content).
+
+Error Boundaries: Implement error boundaries using try-catch blocks or an ErrorBoundary component to handle unexpected errors at the layout level. Provide a fallback UI in case of errors.
+
+Theme Provider (Optional): Optionally wrap the application in a ThemeProvider component if using a theme management library (like Next Themes) to handle dark mode switching. If implementing, ensure proper setup and documentation.
+
+Validation Points:
+
+Verify the file is valid TSX (.tsx).
+
+Check for the "use client" directive at the top.
+
+Confirm globals.css is imported.
+
+Ensure the RootLayout component is correctly defined and exported as default.
+
+Validate the HTML structure includes html, head (with meta tags and title), and body elements.
+
+Check that {children} is rendered within the body.
+
+Verify error boundaries are implemented, either with try-catch or an ErrorBoundary component, with a fallback UI.
+
+If a ThemeProvider is implemented, ensure it is correctly set up and wraps the application.
+
+Success Criteria:
+
+layout.tsx file is created with all specified components and configurations.
+
+Global styles from globals.css are applied to the entire application.
+
+The HTML structure is correctly rendered for all pages.
+
+Meta tags and title are correctly set in the <head>.
+
+Error boundaries are functional and display a fallback UI on errors.
+
+If implemented, theme provider correctly manages application theme.
+
+Documentation:
+
+Add inline comments in layout.tsx to explain each part of the component, including HTML structure and error boundary implementation.
+
+Document the purpose of importing globals.css.
+
+Explain the role of the RootLayout component in the Next.js App Router.
+
+If a ThemeProvider is used, document its setup and usage.
+
+Reference external dependencies like globals.css in comments.
+
+File 9: page.tsx (Homepage, /src/app)
+
+// filename: /src/app/page.tsx
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Write a HomePage component in page.tsx within the /src/app directory to serve as the landing page of the NSBS platform.
+
+"use client" directive: Add "use client" directive at the top of the file as HomePage likely includes interactive elements.
+
+HomePage Component: Define a functional component HomePage.
+
+Distraction-Free Interface: Design a simple, distraction-free user interface focused on clarity and ease of navigation. Avoid any mention of "lifetime access".
+
+Navigation Links: Include navigation links to the following public pages:
+
+Course List: /courseroute/courselist - Link to the Course Catalog page.
+
+About Page: /about - (Page not explicitly defined yet, create placeholder link).
+
+Contact Page: /contact - (Page not explicitly defined yet, create placeholder link).
+
+Use <Link> component from next/link for navigation and ensure link element effects after click (as globally defined in globals.css).
+
+Data Fetching Error Handling: Although homepage might not fetch data initially, prepare for potential future data fetching. Implement error handling for any data fetching operations with fallback UIs (e.g., display an error message if data loading fails).
+
+Tailwind CSS Styling: Use Tailwind CSS for responsive and visually appealing styling. Ensure the design is consistent with the overall NSBS website style (mattes, black, gray, slate, tan, white color scheme).
+
+Accessibility: Ensure the homepage is accessible, with proper semantic HTML and aria attributes where needed.
+
+Testing Instructions: Include inline comments with instructions on how to test the HomePage component (e.g., using React Testing Library to check for the presence of navigation links and correct styling).
+
+Validation Points:
+
+Verify the file is valid TSX (.tsx).
+
+Check for the "use client" directive at the top.
+
+Confirm the HomePage component is defined and correctly renders.
+
+Validate that navigation links to /courseroute/courselist, /about, and /contact are present and use the <Link> component.
+
+Ensure link elements have click effects as defined in globals.css.
+
+Check for implementation of error handling with fallback UI, even if basic initially.
+
+Verify Tailwind CSS is used for styling and the design is responsive and consistent with the NSBS style guide.
+
+Check for accessibility considerations in HTML structure and attributes.
+
+Confirm inline testing instructions are included as comments.
+
+Success Criteria:
+
+page.tsx (Homepage) file is created with all specified components and configurations.
+
+Homepage renders correctly with a distraction-free interface.
+
+Navigation links are functional and point to the correct routes.
+
+Link click effects are visible.
+
+Error handling is implemented (even if basic).
+
+Styling is applied using Tailwind CSS and is responsive and visually consistent.
+
+Homepage is accessible.
+
+Testing instructions are provided in comments.
+
+Documentation:
+
+Add inline comments in page.tsx to explain the component structure, navigation links, styling, and error handling.
+
+Document the purpose of the HomePage and its key elements.
+
+Explain the use of <Link> component for navigation and the implementation of link effects.
+
+Document the error handling strategy and fallback UI.
+
+Provide guidance on testing the component as outlined in the inline testing instructions.
+
+File 10: Course Catalog – page.tsx (/src/app/courseroute/courselist)
+
+// filename: /src/app/courseroute/courselist/page.tsx
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Create a CourseCatalog component in page.tsx within the /src/app/courseroute/courselist directory to display a list of available courses.
+
+"use client" directive: Add "use client" directive at the top of the file as CourseCatalog likely involves client-side data fetching or interactivity.
+
+CourseCatalog Component: Define a functional component CourseCatalog.
+
+Data Fetching: Use Next.js data fetching (SSR or SWR - prefer SSR for public catalog) to retrieve a list of courses.
+
+Fetch course data from an API endpoint defined in /src/lib/api.ts (API not yet created, assume endpoint will be /api/courses or similar).
+
+Ensure data fetching is server-side rendered (SSR) for initial page load performance and SEO, making the course list publicly accessible.
+
+Rendering Course List:
+
+Iterate over the fetched course data and render each course as a card or list item.
+
+For each course, display:
+
+Course Title
+
+Course Description
+
+Course Price (formatted using a utility function from /src/utils/format.ts, function not yet created, assume formatCurrency)
+
+Each course item should link to the Course Description page: /courseroute/coursedescription/[id] using <Link> from next/link. Course ID should be dynamically inserted into the link. Ensure link element effects after click.
+
+Error Handling and Fallback UI: Implement robust error handling for data fetching:
+
+Use try-catch blocks around data fetching.
+
+Provide a fallback UI to display if course data cannot be fetched (e.g., an error message like "Failed to load courses. Please try again later.").
+
+Tailwind CSS Styling: Use Tailwind CSS for styling the course catalog and course items. Ensure responsive design and consistency with the NSBS style.
+
+Accessibility: Ensure the course catalog is accessible, with proper semantic HTML and aria attributes.
+
+Inline Comments and API Reference: Include inline comments and specifically reference /src/lib/api.ts for data fetching and /src/utils/format.ts for currency formatting.
+
+Testing Instructions: Include inline comments with instructions on testing data fetching, rendering, and error handling.
+
+Validation Points:
+
+Verify the file is valid TSX (.tsx).
+
+Check for the "use client" directive at the top.
+
+Confirm the CourseCatalog component is defined and renders correctly.
+
+Validate data fetching logic using Next.js SSR or SWR, fetching from /src/lib/api.ts (API not yet implemented).
+
+Ensure course data is rendered, including title, description, and formatted price.
+
+Check that each course item links to /courseroute/coursedescription/[id] with the correct course ID and uses <Link>.
+
+Verify link click effects are present.
+
+Confirm error handling and fallback UI are implemented for data fetching failures.
+
+Validate Tailwind CSS styling, responsiveness, and NSBS style consistency.
+
+Check for accessibility considerations.
+
+Ensure inline comments and references to /src/lib/api.ts and /src/utils/format.ts are present.
+
+Confirm inline testing instructions are included.
+
+Success Criteria:
+
+page.tsx (Course Catalog) file is created with all specified components and configurations.
+
+Course catalog page renders a list of courses fetched from the API.
+
+Course titles, descriptions, and formatted prices are displayed for each course.
+
+Each course links to its description page with correct ID and link effects.
+
+Error handling is implemented and fallback UI is displayed when data fetching fails.
+
+Styling is applied using Tailwind CSS, is responsive, and consistent with NSBS style.
+
+Course catalog is accessible.
+
+Documentation and testing instructions are included in comments.
+
+Documentation:
+
+Add inline comments in page.tsx to explain the component structure, data fetching, course rendering, error handling, and styling.
+
+Document the data fetching approach (SSR/SWR) and the API endpoint used from /src/lib/api.ts.
+
+Explain how course data is processed and rendered.
+
+Document the error handling strategy and fallback UI.
+
+Explain the use of <Link> for navigation to course description pages and link effects.
+
+Provide guidance on testing data fetching, rendering, and error handling, as outlined in inline testing instructions.
+
+Reference /src/utils/format.ts for currency formatting.
+
+File 11: Course Description – page.tsx (/src/app/courseroute/coursedescription/[id])
+
+// filename: /src/app/courseroute/coursedescription/[id]/page.tsx
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Develop a CourseDescription component in page.tsx within the /src/app/courseroute/coursedescription/[id] directory to display detailed information for a specific course. This page should be publicly accessible.
+
+"use client" directive: Add "use client" directive at the top of the file as CourseDescription involves client-side interactivity (module completion, enrollment button) and potentially state management.
+
+CourseDescription Component: Define a functional component CourseDescription.
+
+Route Parameters: Use Next.js's useParams hook to read the id parameter from the URL to identify the course.
+
+Data Fetching: Fetch course details using Next.js data fetching (SSR or SWR – prefer SSR for public description page).
+
+Fetch course details from /src/lib/api.ts using the course id obtained from useParams. Assume API endpoint will be something like /api/courses/[id].
+
+Ensure data fetching is server-side rendered (SSR) for initial page load and SEO, making course description publically accessible.
+
+Rendering Course Details:
+
+Display the fetched course details, including:
+
+Course Title
+
+Course Description
+
+Learning Modules: Render text-based learning modules:
+
+For each module, display:
+
+Module Title
+
+Module Content (text)
+
+Button: "I have completed this module".
+
+When clicked, this button should:
+
+Update module completion status in the Zustand store (/src/store/courseStore.ts).
+
+Provide visual feedback on click (link effect).
+
+Enrollment/Purchase Button:
+
+Display an "Enroll Now" or "Purchase Course" button.
+
+Implement dynamic payment link integration based on course ID:
+
+Import payment link mappings from /src/config/paymentLinks.ts.
+
+Use the following Stripe URLs based on course ID:
+
+"cmp": "https://buy.stripe.com/cN24gT15K07Y8dG4gg"
+
+"rmp": "https://buy.stripe.com/bIY3cP9Cg4oefG8eUW"
+
+"lsscp-yb": "https://buy.stripe.com/28obJl4hW1c265y5kn"
+
+"lsscp-gb": "https://buy.stripe.com/28ofZBcOsaMC9hKbIM"
+
+"lsscp-bb": "https://buy.stripe.com/5kAdRt7u807Y65y6ot"
+
+For any other course ID, default to integrating with the API route at /api/stripe/checkout/route.ts (API route not yet created, assume it will handle dynamic checkout session creation).
+
+Use <Link> component to wrap the enrollment button, pointing to the Stripe URL or API route. Ensure link element effects after click.
+
+Final Exam Access Restriction: Implement logic to restrict access to the final exam.
+
+Final exam should only be accessible after all modules in the course are marked as complete.
+
+This logic should likely be managed by the Zustand store (/src/store/courseStore.ts) and checked before rendering the exam access link/button.
+
+Error Boundaries and SSR/Hydration Caching:
+
+Implement error boundaries for component rendering and data fetching.
+
+Utilize SSR and hydration caching strategies for performance.
+
+Tailwind CSS Styling: Use Tailwind CSS for styling the course description page, modules, and buttons. Maintain consistency with NSBS style.
+
+Detailed Inline Comments: Include detailed inline comments throughout the component, referencing /src/lib/api.ts, /src/config/paymentLinks.ts, and /src/store/courseStore.ts.
+
+Testing Instructions: Include inline comments with instructions on testing data fetching, module rendering, enrollment button functionality, and exam access restriction logic.
+
+Validation Points:
+
+Verify the file is valid TSX (.tsx).
+
+Check for the "use client" directive at the top.
+
+Confirm the CourseDescription component is defined and renders correctly.
+
+Validate useParams hook is used to get course ID from URL.
+
+Ensure data fetching logic using SSR/SWR from /src/lib/api.ts with course ID.
+
+Check that course title and description are rendered.
+
+Verify learning modules are rendered with title, content, and "Complete Module" button.
+
+Confirm "Complete Module" button updates Zustand store and has link effect.
+
+Validate enrollment/purchase button integration with dynamic payment links from /src/config/paymentLinks.ts and Stripe URLs/API route.
+
+Ensure enrollment button uses <Link> and has link effect.
+
+Check final exam access restriction logic based on module completion status from Zustand store.
+
+Verify error boundaries and SSR/hydration caching are implemented.
+
+Validate Tailwind CSS styling, responsiveness, and NSBS style consistency.
+
+Ensure detailed inline comments and references to /src/lib/api.ts, /src/config/paymentLinks.ts, and /src/store/courseStore.ts are present.
+
+Confirm inline testing instructions are included.
+
+Success Criteria:
+
+page.tsx (Course Description) file is created with all specified components and configurations.
+
+Course description page dynamically loads and displays details for a specific course based on URL ID.
+
+Course title, description, and learning modules are rendered.
+
+"Complete Module" buttons update Zustand store and provide visual feedback.
+
+Enrollment/purchase button correctly integrates dynamic payment links and Stripe URLs/API route.
+
+Final exam access is restricted until all modules are completed.
+
+Error handling and SSR/hydration caching are functional.
+
+Styling is applied using Tailwind CSS, is responsive, and consistent with NSBS style.
+
+Course description page is accessible to the public.
+
+Comprehensive documentation and testing instructions are included in comments.
+
+Documentation:
+
+Add inline comments in page.tsx to thoroughly explain the component structure, route parameter handling, data fetching, module rendering, enrollment logic, exam access control, error handling, and styling.
+
+Document the data fetching approach (SSR/SWR) and the API endpoint used from /src/lib/api.ts.
+
+Explain how module completion status is managed using the Zustand store (/src/store/courseStore.ts).
+
+Document the dynamic payment link integration with /src/config/paymentLinks.ts and Stripe.
+
+Explain the logic for restricting final exam access.
+
+Document error handling and SSR/hydration caching strategies.
+
+Provide detailed guidance on testing all aspects of the component, as outlined in inline testing instructions.
+
+Reference all external dependencies: /src/lib/api.ts, /src/config/paymentLinks.ts, and /src/store/courseStore.ts.
+
+File 12: Button.tsx (/src/app/components/ui)
+
+// filename: /src/app/components/ui/Button.tsx
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Create a reusable Button component in Button.tsx within the /src/app/components/ui directory.
+
+"use client" directive: Add "use client" directive at the top of the file as Button is an interactive UI component.
+
+Button Component Definition: Define a functional component Button that accepts the following props:
+
+label: string - Text to display on the button.
+
+onClick: () => void - Function to execute when the button is clicked.
+
+variant: "primary" | "secondary" | "tertiary" - Button style variant.
+
+className: string (optional) - Optional Tailwind CSS class names for customization.
+
+Semantic <button> Rendering: Render a semantic <button> element.
+
+Apply Tailwind CSS classes based on the variant prop to style the button (e.g., primary, secondary, tertiary styles should be pre-defined using Tailwind classes in your project's style system).
+
+Include className prop to allow for additional styling.
+
+Set appropriate aria- attributes for accessibility if needed (e.g., aria-label if button text is not directly descriptive).
+
+Strict TypeScript: Use strict TypeScript for prop types and component implementation.
+
+Tailwind CSS: Utilize Tailwind CSS for all styling. Ensure styles are consistent with the NSBS design system.
+
+Error Handling: Implement basic error handling, such as logging an error if required props are missing or of incorrect type (though TypeScript should largely prevent this at compile time).
+
+Inline Testing Instructions: Include inline comments with instructions on how to test the Button component using React Testing Library (e.g., test rendering with different variants, check onClick functionality).
+
+Validation Points:
+
+Verify the file is valid TSX (.tsx).
+
+Check for the "use client" directive at the top.
+
+Confirm the Button component is defined and accepts the specified props with correct types.
+
+Validate that a semantic <button> element is rendered.
+
+Ensure Tailwind CSS classes are applied based on the variant prop and className prop is used.
+
+Check for appropriate aria- attributes for accessibility.
+
+Verify basic error handling is in place (e.g., logging for missing props - though TypeScript helps prevent this).
+
+Confirm inline testing instructions are included.
+
+Success Criteria:
+
+Button.tsx file is created with all specified components and configurations.
+
+Button component renders correctly with different variants and styles.
+
+onClick prop function is executed when the button is clicked.
+
+Custom className prop allows for additional styling.
+
+Button is accessible and uses semantic HTML.
+
+Error handling is implemented (basic logging if necessary).
+
+Testing instructions are provided in comments.
+
+Documentation:
+
+Add inline comments in Button.tsx to explain the component's purpose, props, variant styles, and accessibility considerations.
+
+Document how to use the Button component and its different props.
+
+Explain the styling approach using Tailwind CSS and variants.
+
+Provide guidance on testing the component as outlined in the inline testing instructions.
+
+File 13: Card.tsx (/src/app/components/ui)
+
+// filename: /src/app/components/ui/Card.tsx
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Develop a reusable Card component in Card.tsx within the /src/app/components/ui directory.
+
+"use client" directive: Add "use client" directive at the top of the file if Card component includes any client-side interactivity (though generally, cards are often server components, decide based on actual use case—if purely presentational, consider removing "use client"). If it's purely presentational, remove "use client" and consider making it a server component for better performance. If interactivity is needed later, you can add "use client" then.
+
+Card Component Definition: Define a functional component Card that accepts the following props:
+
+header: React.ReactNode (optional) - Content to render in the card header.
+
+body: React.ReactNode - Content to render in the card body (required).
+
+footer: React.ReactNode (optional) - Content to render in the card footer.
+
+className: string (optional) - Optional Tailwind CSS class names for customization of the card container.
+
+Styled Container and Sections: Render a container <div> with styled sections using Tailwind CSS:
+
+Use Tailwind classes to style the card container (e.g., bg-white, rounded-md, shadow-sm, border).
+
+If header prop is provided, render a <div className="card-header-classes">{header}</div>. Define card-header-classes using Tailwind for header styling (e.g., p-4, border-b, font-semibold).
+
+Render a body section <div className="card-body-classes">{body}</div>. Define card-body-classes using Tailwind for body styling (e.g., p-4).
+
+If footer prop is provided, render a <div className="card-footer-classes">{footer}</div>. Define card-footer-classes using Tailwind for footer styling (e.g., p-4, border-t, text-sm, text-gray-500).
+
+Apply className prop to the main container for additional customization.
+
+Error Handling: Implement basic error handling, such as checking if the body prop is provided (as it's required) and logging an error if missing.
+
+Inline Testing Instructions: Include inline comments with instructions on testing the Card component using React Testing Library (e.g., test rendering with header, body, footer, check different content within sections).
+
+Validation Points:
+
+Verify the file is valid TSX (.tsx).
+
+Check for the "use client" directive if interactivity is included, otherwise, ensure it's a server component.
+
+Confirm the Card component is defined and accepts the specified props with correct types.
+
+Validate that a container <div> and sections for header, body, and footer are rendered conditionally based on props.
+
+Ensure Tailwind CSS classes are applied for styling card container and sections.
+
+Check basic error handling for required body prop.
+
+Confirm inline testing instructions are included.
+
+Success Criteria:
+
+Card.tsx file is created with all specified components and configurations.
+
+Card component renders correctly with header, body, and footer sections when props are provided.
+
+Tailwind CSS styling is applied to card container and sections.
+
+Content passed as props is correctly rendered in respective sections.
+
+Error handling is implemented for the required body prop.
+
+Testing instructions are provided in comments.
+
+Documentation:
+
+Add inline comments in Card.tsx to explain the component's purpose, props, section structure, and styling.
+
+Document how to use the Card component and its props (header, body, footer).
+
+Explain the styling approach using Tailwind CSS for different card sections.
+
+Provide guidance on testing the component as outlined in the inline testing instructions.
+
+File 14: Navbar.tsx (/src/app/components/ui)
+
+// filename: /src/app/components/ui/Navbar.tsx
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Create a Navbar component in Navbar.tsx within the /src/app/components/ui directory to handle website navigation.
+
+"use client" directive: Add "use client" directive at the top of the file as Navbar will likely handle user interactions and potentially client-side routing or state.
+
+Navbar Component Definition: Define a functional component Navbar.
+
+Dynamic Navigation Links: Render dynamic navigation links based on user authentication and roles:
+
+Public Pages: Always render links for public pages:
+
+Homepage: /
+
+Course Catalog: /courseroute/courselist
+
+Conditional Links (Authenticated Users): Conditionally render links based on user authentication status and role:
+
+Admin Users: If user is authenticated and has "ADMIN" role, render:
+
+Admin Dashboard: /admin/dashboard
+
+Student Users: If user is authenticated and has "STUDENT" role, render:
+
+Student Dashboard: /student/dashboard
+
+Use <Link> component from next/link for all navigation links. Ensure link element effects after click.
+
+Implement logic to check user authentication and role. You'll likely need to use context or a Zustand store (/src/store/userStore.ts) to access user session and role information.
+
+RBAC Checks and Middleware: While Navbar itself renders links based on role, remember that actual RBAC (Role-Based Access Control) enforcement must be handled by middleware and API routes (specifically /src/app/api/auth/[...auth]/route.ts). Navbar only conditionally displays links.
+
+Navigation Error Logging: Implement error logging for navigation-related issues (though client-side routing errors are less common in Next.js App Router, consider logging if navigation actions fail or redirect unexpectedly, especially if you are programmatically navigating).
+
+Tailwind CSS Styling: Use Tailwind CSS for styling the Navbar, links, and overall layout. Ensure responsiveness and consistency with the NSBS style.
+
+Accessibility Attributes: Include accessibility attributes (e.g., aria-label, aria-expanded, aria-controls if you have dropdown menus or similar interactive elements in the Navbar – not explicitly requested in this prompt, but good practice for a real Navbar).
+
+Inline Testing Instructions: Include inline comments with instructions on testing the Navbar component using React Testing Library (e.g., test rendering of public links, conditional rendering of admin/student links based on mock authentication states, check link functionalities and accessibility attributes).
+
+Validation Points:
+
+Verify the file is valid TSX (.tsx).
+
+Check for the "use client" directive at the top.
+
+Confirm the Navbar component is defined and renders correctly.
+
+Validate that links for homepage and course catalog are always rendered.
+
+Ensure conditional rendering of admin and student dashboard links based on user role and authentication status (mock user context for testing if needed).
+
+Check that <Link> component is used for all navigation links and link effects are present.
+
+Verify error logging for navigation-related issues (if implemented beyond basic component errors).
+
+Validate Tailwind CSS styling, responsiveness, and NSBS style consistency.
+
+Check for accessibility attributes (especially if Navbar is more complex with dropdowns or interactive elements).
+
+Confirm inline testing instructions are included.
+
+Success Criteria:
+
+Navbar.tsx file is created with all specified components and configurations.
+
+Navbar renders correctly with public navigation links.
+
+Admin and student dashboard links are conditionally rendered based on simulated user roles and authentication status.
+
+Navigation links are functional and use <Link> with link effects.
+
+Error logging for navigation is implemented (if applicable).
+
+Styling is applied using Tailwind CSS, is responsive, and consistent with NSBS style.
+
+Navbar is accessible.
+
+Testing instructions are provided in comments.
+
+Documentation:
+
+Add inline comments in Navbar.tsx to explain the component's purpose, dynamic link rendering logic, authentication checks, RBAC context (even though enforced elsewhere), error logging, styling, and accessibility.
+
+Document how the Navbar handles dynamic links based on user roles and authentication.
+
+Explain the use of <Link> component and link effects.
+
+Document error logging strategy for navigation.
+
+Provide guidance on testing the component, especially conditional link rendering, as outlined in the inline testing instructions.
+
+Reference /src/store/userStore.ts if used for user session/role management.
+
+File 15: ProgressTracker.tsx (/src/app/components/ui)
+
+// filename: /src/app/components/ui/ProgressTracker.tsx
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Develop a ProgressTracker component in ProgressTracker.tsx within the /src/app/components/ui directory to display course progress.
+
+"use client" directive: Add "use client" directive at the top of the file as ProgressTracker will need to access and react to changes in the Zustand store, making it a client component.
+
+ProgressTracker Component Definition: Define a functional component ProgressTracker.
+
+Data Retrieval from Zustand Store:
+
+Retrieve progress data from the Zustand store (/src/store/courseStore.ts).
+
+The store should manage:
+
+completedModulesCount: Number of modules completed by the student in the current course.
+
+totalModulesCount: Total number of modules in the current course.
+
+Use Zustand's useStore hook to subscribe to and access these values from the courseStore.
+
+Display Progress:
+
+Render the progress as text: "X of Y Modules Complete", where X is completedModulesCount and Y is totalModulesCount.
+
+Example: "3 of 7 Modules Complete".
+
+Error Handling: Implement error handling for cases where progress data might not be available in the store or if there are issues accessing the store. Provide a fallback display if data is not available (e.g., "Progress data unavailable").
+
+Tailwind CSS Styling: Use Tailwind CSS to style the ProgressTracker text and container. Ensure styling is consistent with the NSBS design.
+
+Inline Comments: Include inline comments explaining data retrieval from Zustand, progress display logic, and error handling.
+
+Testing Instructions: Include inline comments with instructions on testing the ProgressTracker using React Testing Library (e.g., test rendering with different progress values from a mock Zustand store, check fallback UI when data is not available).
+
+Validation Points:
+
+Verify the file is valid TSX (.tsx).
+
+Check for the "use client" directive at the top.
+
+Confirm the ProgressTracker component is defined and renders correctly.
+
+Validate data retrieval from the Zustand store (/src/store/courseStore.ts) using useStore hook.
+
+Ensure progress is displayed as "X of Y Modules Complete" using retrieved data.
+
+Check error handling and fallback UI for cases where progress data is unavailable.
+
+Validate Tailwind CSS styling and NSBS style consistency.
+
+Confirm inline comments and testing instructions are included.
+
+Success Criteria:
+
+ProgressTracker.tsx file is created with all specified components and configurations.
+
+ProgressTracker component correctly retrieves and displays course progress from the Zustand store.
+
+Progress is displayed in the format "X of Y Modules Complete".
+
+Fallback UI is shown if progress data is not available.
+
+Styling is applied using Tailwind CSS and is consistent with NSBS style.
+
+Testing instructions are provided in comments.
+
+Documentation:
+
+Add inline comments in ProgressTracker.tsx to explain the component's purpose, data retrieval from Zustand store, progress display logic, and error handling.
+
+Document how the component accesses and uses data from the courseStore.ts Zustand store.
+
+Explain the error handling strategy and fallback display.
+
+Provide guidance on testing the component as outlined in the inline testing instructions.
+
+Reference /src/store/courseStore.ts for Zustand store interaction.
+
+File 16: CourseModule.tsx (/src/app/components/ui)
+
+// filename: /src/app/components/ui/CourseModule.tsx
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Create a CourseModule component in CourseModule.tsx within the /src/app/components/ui directory to display details for a single learning module and handle module completion.
+
+"use client" directive: Add "use client" directive at the top of the file as CourseModule includes interactivity (module completion button) and likely state management or interaction with Zustand store.
+
+CourseModule Component Definition: Define a functional component CourseModule that accepts the following props:
+
+id: string - Unique identifier for the module.
+
+title: string - Title of the module.
+
+content: string - Content of the module (text-based).
+
+order: number - Order of the module within the course.
+
+Rendering Module Details:
+
+Display the module title and content.
+
+Include a button: "I have completed this module".
+
+When clicked, this button should:
+
+Update the module completion status in the Zustand store (/src/store/courseStore.ts). You'll need to dispatch an action to the store to mark the module as completed for the current user and course enrollment.
+
+Provide visual feedback on click (link effect).
+
+Strict TSX: Use strict TSX for component implementation and prop types.
+
+Inline Error Logging: Implement inline error logging for any issues during module completion update in the Zustand store or button click handling. Use console.error for logging errors with descriptive messages.
+
+Tailwind CSS Styling: Use Tailwind CSS to style the module display, content, and completion button. Maintain consistency with the NSBS style.
+
+Inline Comments and Store Reference: Include inline comments explaining component structure, module completion logic, interaction with Zustand store, and error logging. Specifically reference /src/store/courseStore.ts.
+
+Testing Instructions: Include inline comments with instructions on testing the CourseModule using React Testing Library (e.g., test rendering with module details, check button click functionality to update Zustand store, verify visual feedback on button click).
+
+Validation Points:
+
+Verify the file is valid TSX (.tsx).
+
+Check for the "use client" directive at the top.
+
+Confirm the CourseModule component is defined and accepts specified props with correct types.
+
+Validate rendering of module title and content.
+
+Ensure "I have completed this module" button is present.
+
+Check that button click updates module completion status in the Zustand store (/src/store/courseStore.ts).
+
+Verify visual feedback on button click (link effect).
+
+Confirm inline error logging for module completion update issues.
+
+Validate Tailwind CSS styling and NSBS style consistency.
+
+Ensure inline comments and reference to /src/store/courseStore.ts are present.
+
+Confirm inline testing instructions are included.
+
+Success Criteria:
+
+CourseModule.tsx file is created with all specified components and configurations.
+
+CourseModule component correctly renders module title and content.
+
+"I have completed this module" button is functional and updates module completion status in the Zustand store.
+
+Visual feedback is provided on button click.
+
+Error logging is implemented for module completion updates.
+
+Styling is applied using Tailwind CSS and is consistent with NSBS style.
+
+Testing instructions are provided in comments.
+
+Documentation:
+
+Add inline comments in CourseModule.tsx to explain the component's purpose, props, module completion logic, interaction with Zustand store, error logging, and styling.
+
+Document how the component uses data from props to display module details.
+
+Explain the button click handler and how it updates the module completion status in the courseStore.ts Zustand store.
+
+Document the error logging strategy.
+
+Provide guidance on testing the component, especially button click functionality and Zustand store updates, as outlined in the inline testing instructions.
+
+Reference /src/store/courseStore.ts for Zustand store interaction.
+
+File 17: Exam.tsx (/src/app/components/ui)
+
+// filename: /src/app/components/ui/Exam.tsx
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Write an Exam component in Exam.tsx within the /src/app/components/ui directory to handle the final exam for a course.
+
+"use client" directive: Add "use client" directive at the top of the file as Exam component involves extensive client-side state management, user interaction, and submission logic.
+
+Exam Component Definition: Define a functional component Exam.
+
+Rendering 100 Questions:
+
+Fetch 100 exam questions for the current course (API endpoint not yet defined, assume /api/exams/[courseId]/questions in /src/lib/api.ts).
+
+Render each question:
+
+Question Text
+
+Four multiple-choice options (rendered as radio buttons or similar selectable elements).
+
+Ensure questions are rendered in the correct order (based on question order property, if available).
+
+Answer Selection and State Management:
+
+Manage user's selected answers for each question. Use local state (useState in React) or Zustand (/src/store/examStore.ts - create if needed, or potentially use courseStore if exam state is closely tied to course progress) to store selected answers.
+
+Store answers as a mapping of question IDs to selected answer indices (e.g., {questionId1: 2, questionId2: 0, ...}).
+
+Prevent Submission Before All Questions Answered:
+
+Disable the "Submit Exam" button initially.
+
+Enable the "Submit Exam" button only when all 100 questions have been answered by the user.
+
+Score Calculation on Submission:
+
+When the "Submit Exam" button is clicked:
+
+Prevent default form submission behavior.
+
+Calculate the exam score:
+
+Compare user's selected answers with the correct answer index for each question (from question data fetched from API).
+
+Calculate the total score (number of correct answers out of 100).
+
+Determine if the exam is passed: score ≥ 80 (80 out of 100 correct answers).
+
+Display the exam score and pass/fail status to the user.
+
+Potentially store the exam attempt details in the database via an API call (API endpoint not yet defined, assume /api/exams/[examId]/submit or similar in /src/lib/api.ts).
+
+Error Handling: Implement detailed error handling:
+
+Error handling for fetching questions (fallback UI if questions cannot be loaded).
+
+Error handling during score calculation (though calculation is client-side, handle potential data inconsistencies).
+
+Error handling for API call to submit exam attempt (display error message if submission fails).
+
+Inline Tests: Include inline tests (or instructions for writing unit tests) to test:
+
+Rendering of 100 questions and options.
+
+Answer selection and state management.
+
+Submission prevention until all questions are answered.
+
+Score calculation logic (test with various answer sets to ensure correct scoring and pass/fail determination).
+
+Tailwind CSS Styling: Use Tailwind CSS for styling the exam layout, questions, options, buttons, and score display. Maintain consistency with NSBS style.
+
+Local State or Zustand: Decide whether to use local state (useState) or Zustand for managing exam state (answer selections). Consider using Zustand if exam state needs to be shared across components or persisted across sessions. For this prompt, local state within the Exam component is likely sufficient for simplicity.
+
+Detailed Error Handling and Inline Tests: Ensure detailed error handling is implemented and comprehensive inline tests (or instructions) are provided.
+
+Validation Points:
+
+Verify the file is valid TSX (.tsx).
+
+Check for the "use client" directive at the top.
+
+Confirm the Exam component is defined and renders correctly.
+
+Validate fetching and rendering of 100 exam questions with options.
+
+Ensure answer selection is handled and state is managed (local state or Zustand).
+
+Check that submission is prevented until all questions are answered, and button is disabled/enabled accordingly.
+
+Validate score calculation logic is correctly implemented and pass/fail status is determined.
+
+Ensure score and pass/fail status are displayed to the user after submission.
+
+Check error handling for question fetching, score calculation, and exam submission API call.
+
+Verify Tailwind CSS styling and NSBS style consistency.
+
+Confirm detailed inline comments and inline tests (or testing instructions) are included.
+
+Success Criteria:
+
+Exam.tsx file is created with all specified components and configurations.
+
+Exam component fetches and renders 100 questions with options.
+
+Users can select answers for each question.
+
+Submission is prevented until all questions are answered.
+
+Score is correctly calculated upon submission, and pass/fail status is determined.
+
+Score and pass/fail status are displayed to the user.
+
+Robust error handling is implemented for all potential issues.
+
+Styling is applied using Tailwind CSS and is consistent with NSBS style.
+
+Comprehensive inline tests (or instructions) are provided.
+
+Documentation:
+
+Add inline comments in Exam.tsx to thoroughly explain the component's purpose, question fetching, rendering logic, answer selection management, submission prevention, score calculation, error handling, state management approach (local or Zustand), and testing strategy.
+
+Document the data fetching approach for exam questions and the assumed API endpoint from /src/lib/api.ts.
+
+Explain the logic for answer selection, state management, submission prevention, and score calculation in detail.
+
+Document the error handling strategy for all potential failure points.
+
+Provide detailed guidance on testing all aspects of the Exam component, as outlined in inline tests/instructions.
+
+Reference /src/lib/api.ts for API interactions (question fetching, exam submission), and /src/store/examStore.ts or /src/store/courseStore.ts if Zustand is used for exam state management.
+
+File 18: CertificateDownload.tsx (/src/app/components/ui)
+
+// filename: /src/app/components/ui/CertificateDownload.tsx
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Develop a CertificateDownload component in CertificateDownload.tsx within the /src/app/components/ui directory to generate and allow users to download course completion certificates.
+
+"use client" directive: Add "use client" directive at the top of the file as CertificateDownload involves client-side PDF generation and user interaction (button click to download).
+
+CertificateDownload Component Definition: Define a functional component CertificateDownload.
+
+Button/Link to Generate PDF: Render a button or link labeled "Download Certificate" or similar.
+
+On click, this button/link should trigger the certificate generation and download process.
+
+PDF Generation Logic:
+
+Implement PDF certificate generation using a robust client-side PDF library (e.g., pdf-lib or jsPDF). Choose one and include explicit instructions on setup if needed.
+
+Design a certificate template:
+
+Include NSBS logo, course title, student name, date of completion, certificate ID, and any other relevant information.
+
+Style the certificate to look professional and aligned with NSBS branding.
+
+Implement security measures in the generated PDF:
+
+Watermarking: Add a subtle watermark (e.g., "NSBS Certified", "Official Certificate") to the PDF.
+
+Digital Signature: If feasible with client-side libraries or a serverless function, add a digital signature to enhance authenticity. If client-side digital signatures are not practical, document this limitation and explore server-side signing if security is paramount.
+
+Expiration (Optional but Recommended): Consider adding an expiration date to the certificate, if applicable to NSBS policy. If implemented, ensure the date is clearly displayed on the certificate.
+
+Download Functionality:
+
+Once the PDF is generated, initiate a download of the PDF file when the button/link is clicked. Set appropriate file name (e.g., "NSBS-Certificate-[CourseName]-[StudentName].pdf").
+
+Fallback UI for PDF Generation Failure:
+
+Implement error handling for PDF generation process. Use try-catch blocks around PDF generation code.
+
+Provide a fallback UI if PDF generation fails (e.g., display an error message "Certificate generation failed. Please try again later or contact support.").
+
+Strict TypeScript and Tailwind CSS: Use strict TypeScript for component implementation and prop types. Utilize Tailwind CSS for styling the button/link and any UI elements within the component.
+
+Inline Comments and Library Reference: Include inline comments explaining the certificate generation process, security measures, download functionality, error handling, and chosen PDF library. Specifically reference the chosen PDF library (e.g., pdf-lib or jsPDF) and any setup steps required.
+
+Testing Instructions: Include inline comments with instructions on testing the CertificateDownload component (e.g., test button click to initiate download, check generated PDF content and styling, verify security measures like watermarking, test fallback UI on forced PDF generation error).
+
+Validation Points:
+
+Verify the file is valid TSX (.tsx).
+
+Check for the "use client" directive at the top.
+
+Confirm the CertificateDownload component is defined and renders correctly.
+
+Validate that a button/link to download the certificate is rendered.
+
+Ensure PDF certificate generation is implemented using a chosen PDF library (pdf-lib or jsPDF).
+
+Check that certificate template includes required information (logo, course title, student name, date, ID).
+
+Verify security measures are implemented in the PDF (watermarking, digital signature if feasible, expiration if applicable).
+
+Ensure download functionality is working correctly on button/link click, with appropriate file naming.
+
+Check fallback UI is displayed if PDF generation fails.
+
+Validate Tailwind CSS styling and NSBS style consistency.
+
+Confirm inline comments, library reference, and testing instructions are included.
+
+Success Criteria:
+
+CertificateDownload.tsx file is created with all specified components and configurations.
+
+CertificateDownload component renders a button/link to download certificate.
+
+Clicking the button/link generates a PDF certificate with course and student information.
+
+Certificate includes NSBS logo, course title, student name, date, certificate ID, and professional styling.
+
+Security measures (watermarking, digital signature if possible, expiration if applicable) are implemented in the PDF.
+
+PDF download is initiated with correct file naming.
+
+Fallback UI is displayed if PDF generation fails.
+
+Styling is applied using Tailwind CSS and is consistent with NSBS style.
+
+Testing instructions are provided in comments.
+
+Documentation:
+
+Add inline comments in CertificateDownload.tsx to thoroughly explain the component's purpose, certificate generation process, PDF library used, security measures, download functionality, error handling, and styling.
+
+Document the chosen PDF library (pdf-lib or jsPDF) and any necessary setup or dependencies.
+
+Explain the certificate template design and the information included in the certificate.
+
+Document the implementation of security measures (watermarking, digital signature, expiration).
+
+Explain the download initiation process and file naming convention.
+
+Document the error handling strategy and fallback UI for PDF generation failures.
+
+Provide detailed guidance on testing all aspects of the CertificateDownload component, as outlined in inline testing instructions.
+
+File 19: CourseCreationCanvas.tsx (/src/app/components/ui)
+
+// filename: /src/app/components/ui/CourseCreationCanvas.tsx
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Create a CourseCreationCanvas component in CourseCreationCanvas.tsx within the /src/app/components/ui directory for the admin panel. This component will provide a WYSIWYG-style interface for creating and editing courses.
+
+"use client" directive: Add "use client" directive at the top of the file as CourseCreationCanvas is a highly interactive UI component involving form handling, rich text editing, and likely state management.
+
+CourseCreationCanvas Component Definition: Define a functional component CourseCreationCanvas.
+
+WYSIWYG Interface: Integrate a rich text editor for module content:
+
+Choose a rich text editor library (e.g., Slate or Quill). Include explicit instructions on setting up and configuring the chosen editor.
+
+Integrate the editor into the CourseCreationCanvas for editing module content.
+
+Form Fields: Include form fields for:
+
+Course Title: Text input for course title.
+
+Course Description: Textarea for course description.
+
+Topics:
+
+Allow adding multiple topics.
+
+For each topic:
+
+Topic Title: Text input.
+
+Topic Order: Number input to define topic order within the course.
+
+Modules (within each Topic):
+
+Allow adding multiple modules to each topic.
+
+For each module:
+
+Module Title: Text input.
+
+Module Content: Rich text editor (integrated WYSIWYG editor).
+
+Module Order: Number input for module order within the topic.
+
+Exam Details:
+
+Exam Details Section:
+
+100 Questions:
+
+For each question (1 to 100):
+
+Question Text: Textarea for question text.
+
+Options (4 Multiple Choice): Four text inputs for options (Option 1, Option 2, Option 3, Option 4).
+
+Correct Answer Index: Dropdown or radio buttons to select the correct option index (0, 1, 2, or 3).
+
+Form Validation: Implement form validation using Zod schemas from /src/lib/validations.ts. Define Zod schemas for:
+
+Course creation input (including title, description, topics, modules, exam details, questions, options, correct answers).
+
+Validate all form fields on submit.
+
+Display validation errors to the user for incorrect or missing fields.
+
+Data Submission:
+
+Implement form submission to handle course creation data.
+
+On form submit, validate data using Zod schemas.
+
+If valid, send the course data to an API endpoint to create a new course in the database (API endpoint not yet defined, assume /api/admin/courses/create or similar in /src/lib/api.ts, requires admin authentication).
+
+Handle API response (success or error). Display success message or error messages to the user.
+
+Error Handling and Logging:
+
+Provide inline error handling for form validation, API calls, and component rendering.
+
+Implement logging for errors during form submission or API interactions (use console.error with descriptive messages).
+
+Tailwind CSS Styling: Use Tailwind CSS to style the entire CourseCreationCanvas, form fields, labels, inputs, rich text editor, buttons, and error/success messages. Maintain consistency with NSBS admin panel style.
+
+Inline Comments and Library/Validation References: Include detailed inline comments explaining component structure, form field definitions, rich text editor integration, Zod validation, data submission process, error handling, and styling. Specifically reference the chosen rich text editor library (e.g., Slate or Quill) and /src/lib/validations.ts for Zod schemas.
+
+Testing Instructions: Include inline comments with instructions on testing the CourseCreationCanvas component (e.g., test form rendering, form field validation, rich text editor functionality, data submission process - mock API calls for testing submission, verify error handling and validation error display).
+
+Validation Points:
+
+Verify the file is valid TSX (.tsx).
+
+Check for the "use client" directive at the top.
+
+Confirm the CourseCreationCanvas component is defined and renders correctly.
+
+Validate integration of a rich text editor (Slate or Quill) for module content.
+
+Ensure all form fields are present for course title, description, topics, modules, and exam details (questions, options, correct answers).
+
+Check form validation is implemented using Zod schemas from /src/lib/validations.ts.
+
+Validate form submission logic, API call to create course, and handling of API response (success/error).
+
+Ensure error handling and logging are implemented for form validation and API interactions.
+
+Validate Tailwind CSS styling and NSBS admin panel style consistency.
+
+Confirm detailed inline comments, rich text editor library reference, and /src/lib/validations.ts reference are present.
+
+Confirm inline testing instructions are included.
+
+Success Criteria:
+
+CourseCreationCanvas.tsx file is created with all specified components and configurations.
+
+CourseCreationCanvas component renders a WYSIWYG interface for course creation.
+
+Rich text editor is integrated and functional for module content editing.
+
+All form fields for course details, topics, modules, and exam questions are present and functional.
+
+Form validation is implemented using Zod schemas and validation errors are displayed.
+
+Form submission sends course data to an API endpoint to create a new course.
+
+API response (success/error) is handled and appropriate messages are displayed to the user.
+
+Robust error handling and logging are implemented.
+
+Styling is applied using Tailwind CSS and is consistent with NSBS admin panel style.
+
+Comprehensive testing instructions are provided in comments.
+
+Documentation:
+
+Add inline comments in CourseCreationCanvas.tsx to thoroughly explain the component's purpose, form structure, rich text editor integration, Zod validation, data submission process, API interaction, error handling, and styling.
+
+Document the chosen rich text editor library (Slate or Quill) and its configuration.
+
+Explain the form structure and the purpose of each form field.
+
+Document the Zod schemas used for form validation and how validation errors are handled.
+
+Explain the API endpoint used for course creation and the data submission process.
+
+Document the error handling and logging strategies.
+
+Provide detailed guidance on testing all aspects of the CourseCreationCanvas component, as outlined in inline testing instructions.
+
+Reference the chosen rich text editor library and /src/lib/validations.ts for Zod schemas.
+
+Barrel File for /src/app/components/ui: index.ts
+
+// filename: /src/app/components/ui/index.ts
+
+export * from "./Button";
+export * from "./Card";
+export * from "./Navbar";
+export * from "./ProgressTracker";
+export * from "./CourseModule";
+export * from "./Exam";
+export * from "./CertificateDownload";
+export * from "./CourseCreationCanvas";
+content_copy
+download
+Use code with caution.
+TypeScript
+
+Instructions:
+
+Create an index.ts barrel file in the /src/app/components/ui directory. This file should re-export all named exports from each component file within this directory.
+
+File Content: The file should contain only export * from ...; statements for each component file (Button.tsx, Card.tsx, Navbar.tsx, ProgressTracker.tsx, CourseModule.tsx, Exam.tsx, CertificateDownload.tsx, CourseCreationCanvas.tsx).
+
+No Default Exports: Ensure you are re-exporting named exports using export * from ...;. Do not attempt to re-export default exports through the barrel file (components are typically named exports in this project structure).
+
+Inline Comment: Include an inline comment at the top of the file indicating its purpose as a barrel file.
+
+Validation Points:
+
+Verify the file is valid TypeScript (.ts).
+
+Check that the file exists in the /src/app/components/ui directory.
+
+Confirm that it re-exports all components (Button, Card, Navbar, ProgressTracker, CourseModule, Exam, CertificateDownload, CourseCreationCanvas) using export * from ...; syntax.
+
+Ensure no default exports are included in the barrel file.
+
+Verify the inline comment is present, indicating its role.
+
+Success Criteria:
+
+index.ts barrel file is created in /src/app/components/ui directory.
+
+All components are correctly re-exported through the barrel file.
+
+Components can be imported from @components alias (as defined in tsconfig.json) using the directory path (e.g., @components/Button).
+
+No import/export ambiguities are introduced.
+
+Documentation:
+
+Add an inline comment at the top of index.ts explaining its purpose as a barrel file for re-exporting UI components.
+
+Document the benefits of using barrel files for cleaner imports and module organization.
+
+
+
+
+File 20: Admin Dashboard – page.tsx (/src/app/admin/dashboard)
+
+// filename: /src/app/admin/dashboard/page.tsx
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Develop an AdminDashboard component in page.tsx within the /src/app/admin/dashboard directory. This page is for administrative users and requires authentication and role-based authorization.
+
+"use client" directive: Add "use client" directive at the top of the file as AdminDashboard will likely involve client-side data fetching, user interactions, and potentially state management.
+
+AdminDashboard Component Definition: Define a functional component AdminDashboard.
+
+Authentication and Authorization:
+
+Ensure this page is accessible only to authenticated users with the "ADMIN" role.
+
+Enforce authorization via authjs v5 middleware, specifically in /src/app/api/auth/[...auth]/route.ts. The middleware should verify user session and role.
+
+For client-side rendering of the dashboard content, you might need to fetch user session data to conditionally render UI elements or verify auth status again client-side for enhanced security and UX.
+
+Course Management Controls:
+
+Include a link or component that provides access to course management features.
+
+Specifically, link to the CourseCreationCanvas component (/src/app/components/ui/CourseCreationCanvas.tsx) to allow admins to create new courses. Use <Link> component for navigation and ensure link element effects after click.
+
+User Statistics:
+
+Display key user statistics, such as:
+
+Total number of registered students.
+
+Number of active enrollments.
+
+New user registrations in the last week/month (example statistics).
+
+Fetch this data from an API endpoint (API endpoint not yet defined, assume /api/admin/stats/users or similar in /src/lib/api.ts, requires admin authentication).
+
+Implement SSR or SWR for data fetching.
+
+Payment Summaries:
+
+Display summaries of payment data, such as:
+
+Total revenue generated.
+
+Revenue by course.
+
+Recent transactions (example summaries).
+
+Fetch payment data from an API endpoint (API endpoint not yet defined, assume /api/admin/stats/payments or similar in /src/lib/api.ts, requires admin authentication).
+
+Implement SSR or SWR for data fetching.
+
+Exam Results Overview:
+
+Provide an overview of recent exam results, potentially including:
+
+Number of exams taken.
+
+Pass/fail rates.
+
+Average exam scores (example overview).
+
+Fetch exam result data from an API endpoint (API endpoint not yet defined, assume /api/admin/stats/exams or similar in /src/lib/api.ts, requires admin authentication).
+
+Implement SSR or SWR for data fetching.
+
+Error Boundaries and Logging:
+
+Implement error boundaries to handle errors during component rendering and data fetching.
+
+Include error logging for API calls and component-level errors (use console.error with descriptive messages).
+
+Layout Integration: Ensure the AdminDashboard component uses the global layout defined in /src/app/layout.tsx.
+
+Tailwind CSS Styling: Use Tailwind CSS for styling the dashboard layout, components, and data displays. Maintain a professional and admin-centric design.
+
+Inline Comments and API References: Include detailed inline comments explaining component structure, authentication/authorization enforcement (referencing middleware in /src/app/api/auth/[...auth]/route.ts), data fetching for statistics and summaries (referencing assumed API endpoints in /src/lib/api.ts), error handling, and styling.
+
+Testing Instructions: Include inline comments with instructions on testing the AdminDashboard component (e.g., test authentication and authorization enforcement, test data fetching for statistics and summaries – mock API responses for testing, verify error handling and fallback UIs, check layout integration and styling).
+
+Validation Points:
+
+Verify the file is valid TSX (.tsx).
+
+Check for the "use client" directive at the top.
+
+Confirm the AdminDashboard component is defined and renders correctly.
+
+Validate authentication and authorization are enforced (though actual enforcement is in middleware, ensure the component is designed assuming auth is required and admin role is verified).
+
+Ensure a link to CourseCreationCanvas is present and functional with link effects.
+
+Check for display of user statistics, payment summaries, and exam result overviews (even if placeholder data is used initially – API endpoints are not yet implemented).
+
+Validate error boundaries and error logging are implemented.
+
+Ensure the component uses the global layout from /src/app/layout.tsx.
+
+Verify Tailwind CSS styling and admin-centric design consistency.
+
+Confirm inline comments and API endpoint references (even assumed) are present, along with reference to auth middleware.
+
+Confirm inline testing instructions are included.
+
+Success Criteria:
+
+page.tsx (Admin Dashboard) file is created with all specified components and configurations.
+
+Admin Dashboard component renders with a layout suitable for administrative tasks.
+
+Link to CourseCreationCanvas is present and functional.
+
+Placeholder sections for user statistics, payment summaries, and exam results are displayed (or mock data if API integration is simulated).
+
+Error handling and logging are implemented.
+
+Global layout from /src/app/layout.tsx is applied.
+
+Styling is applied using Tailwind CSS and is consistent with an admin dashboard style.
+
+Testing instructions are provided in comments.
+
+Documentation:
+
+Add inline comments in AdminDashboard.tsx to thoroughly explain the component's purpose, authentication/authorization requirements, data fetching for statistics and summaries, error handling, layout integration, and styling.
+
+Document the expected authentication and authorization flow, referencing the middleware in /src/app/api/auth/[...auth]/route.ts.
+
+Explain the data fetching approach for user statistics, payment summaries, and exam results, referencing assumed API endpoints in /src/lib/api.ts.
+
+Document the error handling strategy and fallback UIs.
+
+Explain how the global layout is integrated.
+
+Provide detailed guidance on testing all aspects of the AdminDashboard component, as outlined in inline testing instructions.
+
+Reference /src/app/api/auth/[...auth]/route.ts for authentication and authorization, and assumed API endpoints in /src/lib/api.ts for data fetching.
+
+File 21: Student Dashboard – page.tsx (/src/app/student/dashboard)
+
+// filename: /src/app/student/dashboard/page.tsx
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Write a StudentDashboard component in page.tsx within the /src/app/student/dashboard directory. This page is for authenticated student users.
+
+"use client" directive: Add "use client" directive at the top of the file as StudentDashboard will likely involve client-side data fetching, user interactions, and potentially state management.
+
+StudentDashboard Component Definition: Define a functional component StudentDashboard.
+
+Authentication and Authorization:
+
+Ensure this page is accessible only to authenticated users.
+
+Authorization is based on authentication – any authenticated user with the "STUDENT" role (default) can access this dashboard. Auth enforcement is via authjs v5 middleware (in /src/app/api/auth/[...auth]/route.ts).
+
+Similar to AdminDashboard, you might need to fetch session data client-side for conditional UI rendering and enhanced UX.
+
+Display Authenticated Student Data:
+
+Display relevant data for the logged-in student:
+
+Enrollment Details: List of courses the student is enrolled in. For each enrollment, display:
+
+Course Title (link to Course Description page: /courseroute/coursedescription/[courseId], use <Link> with link effects).
+
+Enrollment Date.
+
+Course Start Date (if available).
+
+Progress Tracker: Integrate the ProgressTracker component (/src/app/components/ui/ProgressTracker.tsx) to show progress for each enrolled course. You'll need to pass relevant course and enrollment data to ProgressTracker so it can fetch progress from Zustand store or appropriate data source.
+
+Exam Attempt History: Display a history of exam attempts for enrolled courses. For each attempt, show:
+
+Course Title.
+
+Exam Date.
+
+Score.
+
+Pass/Fail status.
+
+Fetch student enrollment data, progress data, and exam history from API endpoints (API endpoints not yet defined, assume /api/student/enrollments, /api/student/progress, /api/student/exam-history or similar in /src/lib/api.ts, requires student authentication).
+
+Use SSR or SWR for data fetching.
+
+Certificate Download Links:
+
+For each course the student has successfully completed (passed the exam), provide a link to download the certificate using the CertificateDownload component (/src/app/components/ui/CertificateDownload.tsx). You might need to conditionally render this link based on course completion status and certificate availability. Use <Link> with link effects or render the CertificateDownload component directly.
+
+Error Handling and SSR/Hydration:
+
+Implement error handling for data retrieval (fallback UIs if data cannot be loaded).
+
+Utilize SSR and hydration strategies for efficient data loading and rendering.
+
+Responsive Tailwind CSS: Use responsive Tailwind CSS for styling the dashboard layout, data displays, and links. Ensure mobile-responsiveness.
+
+Layout Integration: Ensure the StudentDashboard component uses the global layout from /src/app/layout.tsx.
+
+Inline Comments and API References: Include detailed inline comments explaining component structure, authentication enforcement, data fetching for enrollments, progress, and exam history (referencing assumed API endpoints in /src/lib/api.ts), certificate download links (referencing CertificateDownload component), error handling, SSR/hydration, and styling.
+
+Testing Instructions: Include inline comments with instructions on testing the StudentDashboard component (e.g., test authentication enforcement, test data fetching for enrollments, progress, and exam history – mock API responses, verify integration of ProgressTracker and CertificateDownload components, check error handling and fallback UIs, verify responsive design and styling).
+
+Validation Points:
+
+Verify the file is valid TSX (.tsx).
+
+Check for the "use client" directive at the top.
+
+Confirm the StudentDashboard component is defined and renders correctly.
+
+Validate authentication is enforced (though actual enforcement is in middleware, ensure component assumes auth is required).
+
+Ensure enrollment details, progress trackers (using ProgressTracker), and exam history are displayed (even with placeholder or mock data if APIs are not yet implemented).
+
+Check for certificate download links (using or linking to CertificateDownload) for completed courses (conditional rendering based on completion status needed).
+
+Verify error handling and fallback UIs for data fetching failures.
+
+Ensure SSR/hydration strategies are considered in data fetching.
+
+Validate responsive Tailwind CSS styling and student dashboard design consistency.
+
+Ensure the component uses the global layout from /src/app/layout.tsx.
+
+Confirm inline comments, API endpoint references (even assumed), and component references (ProgressTracker, CertificateDownload) are present.
+
+Confirm inline testing instructions are included.
+
+Success Criteria:
+
+page.tsx (Student Dashboard) file is created with all specified components and configurations.
+
+Student Dashboard component renders with a layout suitable for student users.
+
+Enrollment details, progress trackers (using ProgressTracker), and exam history sections are displayed (with placeholder or mock data if needed).
+
+Certificate download links (using or linking to CertificateDownload) are present for completed courses (conditional rendering based on completion status simulated).
+
+Error handling and SSR/hydration are considered.
+
+Global layout from /src/app/layout.tsx is applied.
+
+Styling is applied using responsive Tailwind CSS and is consistent with a student dashboard style.
+
+Testing instructions are provided in comments.
+
+Documentation:
+
+Add inline comments in StudentDashboard.tsx to thoroughly explain the component's purpose, authentication requirements, data fetching for enrollments, progress, and exam history, certificate download links, error handling, SSR/hydration strategies, layout integration, and styling.
+
+Document the expected authentication flow, referencing the middleware in /src/app/api/auth/[...auth]/route.ts.
+
+Explain the data fetching approach for enrollments, progress, and exam history, referencing assumed API endpoints in /src/lib/api.ts.
+
+Document the integration of ProgressTracker and CertificateDownload components.
+
+Explain the error handling strategy and fallback UIs.
+
+Document SSR/hydration considerations.
+
+Explain how the global layout is integrated.
+
+Provide detailed guidance on testing all aspects of the StudentDashboard component, as outlined in inline testing instructions.
+
+Reference /src/app/api/auth/[...auth]/route.ts for authentication, assumed API endpoints in /src/lib/api.ts for data fetching, and /src/app/components/ui/ProgressTracker.tsx, /src/app/components/ui/CertificateDownload.tsx for component integrations.
+
+File 22: Authentication API – route.ts (/src/app/api/auth/[…auth])
+
+// filename: /src/app/api/auth/[...auth]/route.ts
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Generate an API route for authentication using authjs v5 in route.ts within the /src/app/api/auth/[...auth] directory. This route will handle authentication and authorization for the NSBS platform.
+
+Route Handler for authjs v5: Create a Next.js App Router API route handler for authjs v5. Use the NextAuth function from next-auth (or @auth/nextjs) to set up the authentication API endpoint.
+
+Prisma Adapter Integration: Integrate with the Prisma adapter from /src/lib/prisma.ts to persist user accounts, sessions, and verification tokens in the PostgreSQL database. Import the Prisma client from /src/lib/prisma.ts and configure the adapter.
+
+Providers Configuration: Configure authentication providers. For initial setup, focus on:
+
+Credentials Provider: Implement a credentials provider for email/password login. Include bcryptjs for password hashing and verification.
+
+(Optional) Google Provider: Optionally configure a Google OAuth provider for social login. You'll need to set up Google OAuth credentials in the Google Developer Console and configure environment variables for client ID and secret.
+
+(Expandable): The configuration should be easily expandable to include other providers later (e.g., GitHub, Facebook, etc.).
+
+Middleware for Token Validation, Session Renewal, and RBAC: Implement detailed middleware within the authjs route handler for:
+
+Token Validation: authjs v5 handles JWT token validation automatically for session management. Ensure your configuration leverages this by correctly setting up session strategies (likely "jwt" for stateless sessions or "database" for database-backed sessions – choose based on project needs and scalability).
+
+Session Renewal: authjs v5 handles session renewal. Configure session options (e.g., maxAge, updateAge) as needed in the authjs setup.
+
+RBAC Enforcement: Implement role-based access control (RBAC) middleware to protect admin and student routes.
+
+Check user session and role on protected API routes or pages.
+
+For admin routes, verify user role is "ADMIN".
+
+For student routes, verify user is authenticated and has "STUDENT" role (or simply is authenticated if all authenticated users are considered students).
+
+Return appropriate HTTP status codes (e.g., 403 Forbidden, 401 Unauthorized) if authorization fails.
+
+Robust Error Handling and Logging:
+
+Wrap the entire route handler logic in try-catch blocks to handle any unexpected errors.
+
+Implement logging using a library like pino or winston (or console.error for basic logging if external library setup is deferred). Log authentication-related events, errors, and security-related actions.
+
+Return proper HTTP status codes and error responses in case of authentication or authorization failures.
+
+Inline Comments and External Configuration References: Include detailed inline comments explaining the authjs v5 setup, Prisma adapter integration, provider configurations, middleware logic for token validation, session renewal, and RBAC, error handling, and logging. Specifically reference all external configurations (e.g., Prisma client from /src/lib/prisma.ts, environment variables for OAuth providers).
+
+Validation Points:
+
+Verify the file is valid TypeScript (.ts).
+
+Check that it is a Next.js App Router API route handler (using export { ... } from "next-auth/next" or similar).
+
+Confirm authjs v5 is set up correctly using NextAuth function.
+
+Validate Prisma adapter integration from /src/lib/prisma.ts.
+
+Ensure Credentials Provider is configured for email/password login and bcryptjs is used.
+
+Check for (optional) Google Provider configuration and environment variable references.
+
+Verify middleware logic for token validation and session renewal is implicitly handled by authjs configuration and session strategy.
+
+Validate RBAC enforcement logic is implemented within the route handler or in separate middleware (ensure it checks user session and role, and returns appropriate HTTP errors on authorization failure).
+
+Ensure robust error handling (try-catch blocks) and logging are implemented.
+
+Confirm detailed inline comments and references to external configurations (Prisma client, environment variables) are present.
+
+Success Criteria:
+
+route.ts (Authentication API) file is created with all specified components and configurations.
+
+Authentication API route is correctly set up using authjs v5 and Next.js App Router.
+
+Prisma adapter is successfully integrated for persistence.
+
+Credentials Provider (and optionally Google Provider) is configured and functional.
+
+RBAC enforcement is implemented, protecting admin and student routes based on user roles.
+
+Error handling and logging are implemented in the API route.
+
+Authentication and authorization functionalities are working as expected.
+
+Comprehensive documentation is provided in inline comments.
+
+Documentation:
+
+Add inline comments in route.ts to thoroughly explain the authjs v5 setup, Prisma adapter integration, provider configurations, middleware logic for RBAC enforcement, error handling, and logging.
+
+Document the authentication flow and how authjs v5 is configured.
+
+Explain the integration with Prisma adapter and how user data is persisted.
+
+Document the configuration of authentication providers (Credentials, Google, etc.) and environment variables required.
+
+Explain the RBAC enforcement logic and how admin and student routes are protected.
+
+Document the error handling and logging strategies implemented in the API route.
+
+Reference /src/lib/prisma.ts for Prisma client, bcryptjs for password hashing, and environment variables for OAuth provider credentials.
+
+File 23: Stripe Checkout API – route.ts (/src/app/api/stripe/checkout)
+
+// filename: /src/app/api/stripe/checkout/route.ts
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Create an API route to handle Stripe checkout sessions in route.ts within the /src/app/api/stripe/checkout directory. This route will be used to initiate Stripe checkout sessions for course purchases.
+
+Next.js App Router API Route: Create a Next.js App Router API route handler function (e.g., export async function POST(req: NextRequest) { ... }) to handle POST requests for creating Stripe checkout sessions.
+
+Dynamic Payment Link Integration:
+
+Import payment link mappings from /src/config/paymentLinks.ts.
+
+Determine the course ID from the request body or query parameters (e.g., expect course ID to be sent in the request).
+
+Based on the course ID, retrieve the corresponding Stripe payment URL from paymentLinks.ts.
+
+If a payment link is found in paymentLinks.ts for the course ID, redirect the user to that Stripe URL. This implements dynamic redirection to pre-configured Stripe payment links.
+
+Default Checkout Session Creation (API Integration):
+
+If no pre-configured payment link is found in paymentLinks.ts for the given course ID (or for fallback/dynamic pricing scenarios), implement logic to create a Stripe Checkout Session using the Stripe API.
+
+You'll need to:
+
+Initialize the Stripe client using your Stripe secret key (from environment variables - .env.local).
+
+Create a Checkout Session using the Stripe API, specifying:
+
+line_items: Define line items for the course purchase (e.g., course name, price - retrieve price from database or configuration).
+
+mode: Set to 'payment' for one-time payments.
+
+success_url: URL to redirect to on successful payment (e.g., student dashboard or course access page).
+
+cancel_url: URL to redirect to if payment is canceled (e.g., course description page or cart page).
+
+Return a JSON response containing the session URL from Stripe, which the client-side can use to redirect the user to the Stripe checkout page.
+
+Error Handling and Logging:
+
+Implement robust error handling using try-catch blocks.
+
+Log any errors that occur during payment link retrieval or Stripe Checkout Session creation (use console.error with descriptive messages or a logging library).
+
+Return proper HTTP status codes (e.g., 500 Internal Server Error) and error messages in JSON format if checkout session creation fails.
+
+Secure Processing: Ensure secure handling of Stripe secret keys (use environment variables, never hardcode). Follow Stripe's best practices for security.
+
+Next.js App Router API Conventions: Adhere to Next.js App Router API route conventions for request and response handling.
+
+Inline Documentation: Include detailed inline comments explaining the API route logic, dynamic payment link integration, default checkout session creation, Stripe API usage, error handling, security considerations, and Next.js API conventions.
+
+Validation Points:
+
+Verify the file is valid TypeScript (.ts).
+
+Check that it is a Next.js App Router API route handler (using export async function POST(req: NextRequest) { ... } or similar).
+
+Confirm payment link mappings are imported from /src/config/paymentLinks.ts.
+
+Validate logic to retrieve course ID from request and look up payment link in paymentLinks.ts.
+
+Ensure redirection to pre-configured Stripe URLs works when payment link is found.
+
+Check for default checkout session creation logic using Stripe API (if payment link not found or for dynamic pricing).
+
+Validate Stripe API integration (initialization with secret key, Checkout Session creation with line items, success_url, cancel_url).
+
+Ensure error handling (try-catch blocks) and logging are implemented.
+
+Check for secure handling of Stripe secret keys (environment variables).
+
+Verify adherence to Next.js App Router API conventions.
+
+Confirm detailed inline comments are included.
+
+Success Criteria:
+
+route.ts (Stripe Checkout API) file is created with all specified components and configurations.
+
+Stripe Checkout API route is correctly set up using Next.js App Router.
+
+Dynamic payment link integration from /src/config/paymentLinks.ts is functional, redirecting to pre-configured Stripe URLs.
+
+Default checkout session creation using Stripe API is implemented for cases where pre-configured links are not used.
+
+Stripe API integration is secure and follows best practices.
+
+Error handling and logging are implemented in the API route.
+
+API route correctly initiates Stripe checkout sessions and returns session URLs or redirects as expected.
+
+Comprehensive documentation is provided in inline comments.
+
+Documentation:
+
+Add inline comments in route.ts to thoroughly explain the API route logic, dynamic payment link integration, default checkout session creation, Stripe API usage, error handling, security considerations, and Next.js API conventions.
+
+Document how the API route handles course ID and payment link lookup from /src/config/paymentLinks.ts.
+
+Explain the logic for redirecting to pre-configured Stripe URLs.
+
+Document the process of creating a default checkout session using the Stripe API, including line item specification, success and cancel URLs.
+
+Explain security measures for handling Stripe secret keys.
+
+Document the error handling and logging strategies implemented in the API route.
+
+Reference /src/config/paymentLinks.ts for payment link mappings and environment variables for Stripe secret key.
+
+File 24: prisma.ts (/src/lib)
+
+// filename: /src/lib/prisma.ts
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Develop a prisma.ts helper file in the /src/lib directory to instantiate and export a singleton PrismaClient.
+
+PrismaClient Instantiation:
+
+Import PrismaClient from @prisma/client.
+
+Create a singleton instance of PrismaClient. Ensure that only one instance of PrismaClient is created throughout the application lifecycle to prevent connection leaks and optimize performance. Use a global variable or module-level caching to achieve this singleton pattern.
+
+Environment Variables:
+
+Use environment variables DATABASE_URL and DIRECT_URL to configure the PrismaClient connection. Access these using process.env.
+
+Ensure that DATABASE_URL is used for connection pooling (e.g., via Supavisor) and DIRECT_URL is used for direct connections (e.g., for Prisma Migrate).
+
+Connection Pooling (if applicable):
+
+If connection pooling is applicable in your environment (e.g., using Supavisor), ensure PrismaClient is configured to leverage connection pooling via the DATABASE_URL. Document how connection pooling is being utilized.
+
+Error Handling and Logging:
+
+Implement robust error handling during PrismaClient instantiation. Use try-catch blocks to catch potential errors during client creation.
+
+Include logging for Prisma client connection events and errors (use console.log, console.warn, console.error or a logging library for more structured logging). Log connection success, connection errors, and any other relevant Prisma client events.
+
+Export Singleton PrismaClient: Export the singleton PrismaClient instance as a named export (e.g., prisma).
+
+Inline Comments and Environment Variable References: Include detailed inline comments explaining the singleton pattern implementation, environment variable usage (DATABASE_URL, DIRECT_URL), connection pooling considerations, error handling, and logging within prisma.ts. Specifically reference environment variables and Prisma documentation for connection pooling.
+
+Validation Points:
+
+Verify the file is valid TypeScript (.ts).
+
+Check that PrismaClient is imported from @prisma/client.
+
+Confirm a singleton instance of PrismaClient is created and exported.
+
+Validate that environment variables DATABASE_URL and DIRECT_URL are used for PrismaClient configuration.
+
+Ensure connection pooling is considered and documented if applicable.
+
+Check for error handling during PrismaClient instantiation (try-catch blocks).
+
+Validate logging for Prisma client connection events and errors.
+
+Confirm detailed inline comments and environment variable references are present.
+
+Success Criteria:
+
+prisma.ts file is created with all specified components and configurations.
+
+Singleton PrismaClient instance is correctly instantiated and exported.
+
+PrismaClient is configured using DATABASE_URL and DIRECT_URL environment variables.
+
+Connection pooling is addressed and documented if applicable.
+
+Error handling and logging are implemented for Prisma client initialization.
+
+Singleton pattern ensures only one PrismaClient instance is used throughout the application.
+
+Comprehensive documentation is provided in inline comments.
+
+Documentation:
+
+Add inline comments in prisma.ts to thoroughly explain the singleton pattern, PrismaClient instantiation, environment variable usage, connection pooling, error handling, and logging.
+
+Document the singleton pattern implementation and why it's used for PrismaClient.
+
+Explain how DATABASE_URL and DIRECT_URL environment variables are used and their purpose.
+
+Document connection pooling configuration and considerations if applicable.
+
+Explain the error handling and logging strategies for Prisma client initialization and connection events.
+
+Reference Prisma documentation for connection pooling and environment variable configuration.
+
+File 25: validations.ts (/src/lib)
+
+// filename: /src/lib/validations.ts
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Create a validations.ts file in the /src/lib directory to define Zod schemas for data validation throughout the NSBS platform.
+
+Zod Schema Definitions: Use Zod to define strict validation schemas for the following data inputs:
+
+User Registration Schema:
+
+Validate fields for user registration: name, email, password.
+
+Ensure email is in valid email format.
+
+Password should meet complexity requirements (e.g., minimum length, special characters – define specific requirements).
+
+Course Creation Schema:
+
+Validate fields for course creation: title, description, slug, price.
+
+Validate nested structures for topics, modules, and exam details:
+
+Topic Schema: Validate title and order for each topic.
+
+Module Schema: Validate title, content, and order for each module.
+
+Exam Details Schema: Validate exam-related fields (e.g., passScore - if directly editable in course creation, otherwise exam questions are validated).
+
+Question Schema: Validate text, options (array of 4 strings), and correctIndex for each question. Ensure options is an array of exactly 4 strings. Validate correctIndex is within the valid index range (0-3).
+
+Exam Submission Schema:
+
+Validate the format of exam submission data: expected to be a JSON object mapping questionId to selectedIndex.
+
+Ensure all required question IDs are present in the submission.
+
+Validate that selectedIndex is a valid index (0-3).
+
+Module Completion Schema:
+
+Validate data for marking a module as complete: expected to include userId, enrollmentId, moduleId.
+
+Ensure IDs are in valid UUID format or appropriate string format.
+
+Strict Typing and Error Messages:
+
+Use strict TypeScript for defining Zod schemas and their types.
+
+Include detailed inline error messages within Zod schemas to provide user-friendly feedback on validation failures. Customize error messages to be informative and helpful.
+
+Export Schemas: Export all defined Zod schemas as named exports from validations.ts (e.g., userRegistrationSchema, courseCreationSchema, examSubmissionSchema, moduleCompletionSchema).
+
+Inline Documentation: Include detailed inline comments within validations.ts explaining each Zod schema, the fields being validated, validation rules, and the purpose of each schema. Document the expected data structure for validation for each schema.
+
+Validation Points:
+
+Verify the file is valid TypeScript (.ts).
+
+Check that Zod is used to define validation schemas.
+
+Confirm schemas are defined for user registration, course creation (including nested topics, modules, exams, questions), exam submission, and module completion.
+
+Validate that each schema correctly validates the specified fields and data types.
+
+Ensure nested schemas are correctly implemented for course creation's topics, modules, exams, and questions.
+
+Check for validation rules like email format, password complexity, array length for options, index ranges, and UUID/string formats for IDs.
+
+Verify detailed inline error messages are included in Zod schemas.
+
+Confirm all schemas are exported as named exports.
+
+Ensure detailed inline comments are present, documenting each schema and validation rules.
+
+Success Criteria:
+
+validations.ts file is created with all specified components and configurations.
+
+Zod schemas are correctly defined for all required data validation purposes (user registration, course creation, exam submission, module completion).
+
+Each schema effectively validates the intended data inputs with strict rules and data type checks.
+
+Detailed inline error messages are included in schemas to provide user-friendly validation feedback.
+
+All schemas are exported as named exports.
+
+Comprehensive documentation is provided in inline comments.
+
+Documentation:
+
+Add inline comments in validations.ts to thoroughly explain each Zod schema, the fields being validated, validation rules, expected data structures, and the purpose of each schema within the NSBS platform.
+
+Document the specific validation rules applied in each schema (e.g., email format, password complexity, array length, index ranges, ID formats).
+
+Explain how to use these Zod schemas in form handling and API route validation logic.
+
+Provide examples of valid and invalid data for each schema to illustrate the validation rules.
+
+File 26: courseStore.ts (/src/store)
+
+// filename: /src/store/courseStore.ts
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Write a Zustand store named courseStore.ts in the /src/store directory to manage course progress and related state for the NSBS platform.
+
+Zustand Store Creation: Create a Zustand store using create from zustand.
+
+Store State Definition: Define the state within the courseStore:
+
+completedModules: An array of module IDs that the student has completed for the current course enrollment.
+
+currentCourseId: String representing the ID of the currently viewed course.
+
+enrollmentId: String representing the ID of the current course enrollment.
+
+examStatus: String or enum representing the current exam status (e.g., "not_started", "in_progress", "completed", "passed", "failed").
+
+totalModulesCount: Number representing the total modules in the current course.
+
+setCompletedModules: Function to update the completedModules array (e.g., to add a module ID when a module is completed).
+
+setCurrentCourse: Function to set the currentCourseId and potentially initialize other course-related state.
+
+setEnrollmentId: Function to set the enrollmentId.
+
+setExamStatus: Function to update the examStatus.
+
+setTotalModulesCount: Function to set the totalModulesCount.
+
+resetCourseState: Function to reset the entire course state to initial values (useful when navigating away from a course or on logout).
+
+getCourseProgress: Function (selector) that calculates and returns the course progress as a percentage (based on completedModules and totalModulesCount).
+
+Strict Typing: Use strict TypeScript for state definition, actions, and selectors within the Zustand store. Explicitly define types for state variables and function parameters/return types.
+
+Inline Tests (Conceptual): Include conceptual inline "tests" as comments to describe how you would test the store's functionality (though actual unit tests using Jest or similar would be in separate test files, these comments serve as documentation for testing strategy). For example, comment on how to test state updates, selector calculations, and reset functionality.
+
+Error Handling (Conceptual): Consider potential error scenarios (though Zustand state management itself rarely throws errors). Comment on how you might handle potential issues, such as incorrect data types being passed to state update functions or unexpected store behavior. In practice, error handling in Zustand stores often involves ensuring actions are dispatched with correct data and selectors handle edge cases gracefully.
+
+Export Store Hook: Export a custom hook (e.g., useCourseStore) to easily access and use the courseStore in components. Use create function from zustand to create store and export a hook using useStore.
+
+Inline Documentation: Include detailed inline comments within courseStore.ts explaining the purpose of the store, each state variable, each action function, the selector, and the conceptual tests and error handling approaches. Document the intended usage of the store and its actions in components.
+
+Validation Points:
+
+Verify the file is valid TypeScript (.ts).
+
+Check that Zustand create is used to define the store.
+
+Confirm all state variables (completedModules, currentCourseId, enrollmentId, examStatus, totalModulesCount) and action functions (setCompletedModules, setCurrentCourse, setEnrollmentId, setExamStatus, setTotalModulesCount, resetCourseState, getCourseProgress selector) are defined as specified.
+
+Validate strict TypeScript typing is used for state and actions.
+
+Ensure conceptual inline tests and error handling considerations are included as comments.
+
+Check that a custom hook (e.g., useCourseStore) is exported to access the store.
+
+Confirm detailed inline comments are present, documenting the store, state, actions, selector, testing, and error handling.
+
+Success Criteria:
+
+courseStore.ts file is created with all specified components and configurations.
+
+Zustand store is correctly defined with all state variables, action functions, and the progress selector.
+
+Strict TypeScript typing is used throughout the store definition.
+
+Conceptual inline tests and error handling considerations are included as comments.
+
+A custom hook (useCourseStore) is exported for component access.
+
+Comprehensive documentation is provided in inline comments.
+
+Store is ready to be used in React components to manage course progress state.
+
+Documentation:
+
+Add inline comments in courseStore.ts to thoroughly explain the purpose of the Zustand store, each state variable, each action function, the getCourseProgress selector, conceptual testing strategy, and error handling approach.
+
+Document how to use the useCourseStore hook in React components to access and update the course progress state.
+
+Explain the intended usage of each action function and how they modify the store's state.
+
+Document the selector function and how it derives progress information from the state.
+
+Describe the conceptual testing and error handling strategies outlined in the comments.
+
+File 27: userStore.ts (/src/store)
+
+// filename: /src/store/userStore.ts
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Create a Zustand store named userStore.ts in the /src/store directory to manage authenticated user data and session information for the NSBS platform.
+
+Zustand Store Creation: Create a Zustand store using create from zustand.
+
+Store State Definition: Define the state within the userStore:
+
+userId: String, user ID of the authenticated user.
+
+userName: String, user's name.
+
+userEmail: String, user's email address.
+
+userRole: Role enum (ADMIN | STUDENT), user's role.
+
+isAuthenticated: Boolean, indicates if a user is currently authenticated.
+
+session: Session object (type from authjs, if available, or define a simplified session type), stores session data (token, expires, etc.).
+
+setUser: Action function to set all user data (userId, userName, userEmail, userRole) at once, typically after successful login or session retrieval.
+
+clearUser: Action function to clear all user data and reset the store to an unauthenticated state (used on logout).
+
+setSession: Action function to update the session object in the store.
+
+setIsAuthenticated: Action function to directly set the isAuthenticated flag.
+
+getUserRole: Selector function to get the user's role from the store state.
+
+getIsAuthenticated: Selector function to get the isAuthenticated status.
+
+Strict TypeScript: Use strict TypeScript for state definition and action functions. Explicitly define types for state variables, action function parameters, and return types of selectors.
+
+Inline Documentation: Include detailed inline comments within userStore.ts explaining the purpose of the store, each state variable, each action function, and each selector. Document how the store is intended to be used for managing user authentication state and user data in the application.
+
+Validation Points:
+
+Verify the file is valid TypeScript (.ts).
+
+Check that Zustand create is used to define the store.
+
+Confirm all state variables (userId, userName, userEmail, userRole, isAuthenticated, session) and action functions (setUser, clearUser, setSession, setIsAuthenticated, getUserRole selector, getIsAuthenticated selector) are defined as specified.
+
+Validate strict TypeScript typing is used for state and actions.
+
+Ensure inline documentation is present for the store, state, actions, and selectors.
+
+Success Criteria:
+
+userStore.ts file is created with all specified components and configurations.
+
+Zustand store is correctly defined with all state variables, action functions, and selectors for user authentication and data management.
+
+Strict TypeScript typing is used throughout the store definition.
+
+Comprehensive documentation is provided in inline comments.
+
+Store is ready to be used in React components to manage user authentication state, user data, and session information.
+
+Documentation:
+
+Add inline comments in userStore.ts to thoroughly explain the purpose of the Zustand store, each state variable, each action function, and each selector.
+
+Document how to use the useUserStore hook (implicitly created by Zustand's create) in React components to access and update user authentication state and user data.
+
+Explain the intended usage of each action function and how they modify the store's state.
+
+Document the selector functions and how they provide derived authentication status and user role information from the state.
+
+File 28: format.ts (/src/utils)
+
+// filename: /src/utils/format.ts
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Write a utility file named format.ts in the /src/utils directory containing helper functions for formatting data.
+
+formatDate Function:
+
+Function name: formatDate.
+
+Parameter: date: Date (input date as a Date object).
+
+Return type: string (formatted date string).
+
+Functionality: Format the input Date object into a human-readable date string format. Choose a format suitable for displaying dates in the NSBS platform (e.g., "MMMM d, yyyy" - "January 1, 2025" or "yyyy-MM-dd" - "2025-01-01"). Use toLocaleDateString or a date formatting library if needed.
+
+Inline Documentation: Add JSDoc-style comments explaining the function's purpose, parameters, return value, and the date format used.
+
+formatCurrency Function:
+
+Function name: formatCurrency.
+
+Parameter: cents: number (amount in cents as a number).
+
+Return type: string (formatted currency string).
+
+Functionality: Convert the input cents (integer representing amount in cents) into a formatted currency string (e.g., "$299.00"). Use Intl.NumberFormat for currency formatting to handle different locales and currency symbols correctly. Assume USD currency for NSBS.
+
+Inline Documentation: Add JSDoc-style comments explaining the function's purpose, parameters, return value, the currency used (USD), and the formatting approach.
+
+Inline Documentation and Tests: Include inline documentation (JSDoc style) for both functions, clearly explaining their purpose, parameters, and return values. Also, include conceptual inline "tests" as comments to demonstrate how you might test these utility functions (e.g., examples of input and expected output for different scenarios).
+
+Export Functions: Export both formatDate and formatCurrency functions as named exports from format.ts.
+
+Validation Points:
+
+Verify the file is valid TypeScript (.ts).
+
+Check that formatDate function is defined with correct parameters and return type.
+
+Validate formatDate function correctly formats Date objects into a human-readable date string.
+
+Check that formatCurrency function is defined with correct parameters and return type.
+
+Validate formatCurrency function correctly converts cents to a formatted currency string (USD assumed).
+
+Ensure inline documentation (JSDoc style) is present for both functions.
+
+Check for conceptual inline "tests" as comments demonstrating function usage and expected outputs.
+
+Confirm both functions are exported as named exports.
+
+Success Criteria:
+
+format.ts file is created with all specified components and configurations.
+
+formatDate and formatCurrency utility functions are correctly implemented and exported.
+
+formatDate function formats dates as expected.
+
+formatCurrency function formats currency (USD) from cents as expected.
+
+Inline documentation (JSDoc style) and conceptual inline tests are included for both functions.
+
+Functions are ready to be used throughout the application for data formatting.
+
+Documentation:
+
+Add JSDoc-style comments for both formatDate and formatCurrency functions in format.ts.
+
+Clearly document the purpose, parameters, return values, and formatting logic of each function within the JSDoc comments.
+
+Explain the date format used by formatDate and the currency (USD) and formatting approach used by formatCurrency in the documentation.
+
+Document the conceptual inline tests and their purpose in demonstrating function usage.
+
+File 29: paymentLinks.ts (/src/config)
+
+// filename: /src/config/paymentLinks.ts
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Create a paymentLinks.ts file in the /src/config directory to store and export an object mapping course IDs to Stripe payment URLs.
+
+Payment Links Mapping Object:
+
+Create a constant object named paymentLinksMap.
+
+This object should map course IDs (strings) to their corresponding Stripe payment URLs (strings).
+
+Include the following mappings as specified in the prompt:
+
+"cmp": "https://buy.stripe.com/cN24gT15K07Y8dG4gg"
+
+"rmp": "https://buy.stripe.com/bIY3cP9Cg4oefG8eUW"
+
+"lsscp-yb": "https://buy.stripe.com/28obJl4hW1c265y5kn"
+
+"lsscp-gb": "https://buy.stripe.com/28ofZBcOsaMC9hKbIM"
+
+"lsscp-bb": "https://buy.stripe.com/5kAdRt7u807Y65y6ot"
+
+The object should be structured as a simple key-value map.
+
+Export paymentLinksMap: Export the paymentLinksMap object as a named export from paymentLinks.ts.
+
+Inline Comments and Usage Documentation: Include inline comments in paymentLinks.ts to document the purpose of this file, the structure of the paymentLinksMap object, and how to use it in the application (e.g., in the Course Description page to get payment links based on course IDs). Document the course IDs and their corresponding course names for clarity.
+
+Validation Points:
+
+Verify the file is valid TypeScript (.ts).
+
+Check that a constant object named paymentLinksMap is created.
+
+Confirm that paymentLinksMap is an object mapping course IDs (strings) to Stripe payment URLs (strings).
+
+Validate that all specified course ID to URL mappings are included in the object.
+
+Ensure paymentLinksMap object is exported as a named export.
+
+Check for inline comments documenting the file's purpose, object structure, and usage examples.
+
+Success Criteria:
+
+paymentLinks.ts file is created with all specified components and configurations.
+
+paymentLinksMap object is correctly defined and contains all specified course ID to Stripe URL mappings.
+
+paymentLinksMap object is exported as a named export.
+
+Comprehensive documentation is provided in inline comments, explaining the file's purpose and usage.
+
+File is ready to be used in other parts of the application (e.g., Course Description page) to retrieve payment links dynamically.
+
+Documentation:
+
+Add inline comments in paymentLinks.ts to thoroughly explain the purpose of the file, the structure of the paymentLinksMap object, and how to use it to retrieve Stripe payment URLs based on course IDs.
+
+Document each course ID and its corresponding course name within the comments for better readability and maintainability.
+
+Provide examples of how to import and use paymentLinksMap in components or API routes to get payment links dynamically.
+
+File 30: .env.local (Root)
+
+// filename: /.env.local
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Draft a production-ready .env.local file at the root of the project. Note: This file should not be committed to version control.
+
+Environment Variables: Include the following environment variables with placeholder values. Provide inline comments explaining the purpose of each variable.
+
+DATABASE_URL: Placeholder value for PostgreSQL database connection URL with connection pooling (Supavisor). Comment: # Connect to Supabase via connection pooling with Supavisor. Example placeholder: postgresql://postgres.ncuukgdweeughdezkisd:[YOUR-PASSWORD]@aws-0-us-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true
+
+DIRECT_URL: Placeholder value for direct PostgreSQL database connection URL. Comment: # Direct connection to the database. Used for migrations. Example placeholder: postgresql://postgres.ncuukgdweeughdezkisd:[YOUR-PASSWORD]@aws-0-us-west-1.pooler.supabase.com:5432/postgres
+
+STRIPE_SECRET_KEY: Placeholder value for Stripe secret key. Comment: # Stripe Secret Key for API access. Example placeholder: sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+**(Optional) GOOGLE_CLIENT_ID: Placeholder value for Google OAuth Client ID (if Google Provider is configured). Comment:# Google OAuth Client ID.Example placeholder:your-google-client-id.apps.googleusercontent.com`
+
+**(Optional) GOOGLE_CLIENT_SECRET: Placeholder value for Google OAuth Client Secret (if Google Provider is configured). Comment:# Google OAuth Client Secret.Example placeholder:your-google-client-secret`
+
+NEXTAUTH_SECRET: Placeholder value for NextAuth secret. Comment: # Secret key for NextAuth JWT and session encryption. Example placeholder: your-super-secret-nextauth-secret-key
+
+NEXTAUTH_URL: Placeholder value for NextAuth URL (typically your application's base URL). Comment: # Base URL of your application for NextAuth. Example placeholder: http://localhost:3000 or https://www.nsbs-certified.com
+
+Inline Comments: Ensure each environment variable has an inline comment explaining its purpose and usage.
+
+Placeholder Values: Use clear placeholder values (e.g., [YOUR-PASSWORD], your-stripe-secret-key, your-google-client-id) to indicate where users need to replace with their actual secrets and configuration values.
+
+Validation Points:
+
+Verify the file is in .env.local format.
+
+Check that all specified environment variables (DATABASE_URL, DIRECT_URL, STRIPE_SECRET_KEY, NEXTAUTH_SECRET, NEXTAUTH_URL, and optionally GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET) are included.
+
+Validate that each variable has a clear inline comment explaining its purpose.
+
+Ensure placeholder values are used to indicate where actual values should be inserted.
+
+Success Criteria:
+
+.env.local file is created with all specified environment variables and placeholder values.
+
+Each environment variable has a clear inline comment explaining its purpose.
+
+Placeholder values are used to guide users on configuration.
+
+File is ready to be populated with actual secret keys and configuration values for development and production environments.
+
+Documentation is provided through inline comments within the file.
+
+Documentation:
+
+Add inline comments within .env.local to document the purpose of each environment variable.
+
+Explain where to obtain the actual values for each variable (e.g., from Supabase project settings, Stripe dashboard, Google Developer Console, etc.).
+
+Emphasize that .env.local should not be committed to version control and is for local development configuration. Production environment variables should be configured separately in the hosting platform.
+
+File 31: README.md (Root)
+
+// filename: /README.md
+content_copy
+download
+Use code with caution.
+
+Instructions:
+
+Write a comprehensive README.md file at the root of the project to document the NSBS platform and provide setup instructions.
+
+Project Overview:
+
+Provide a brief overview of the "National Society of Business Sciences" (NSBS) online learning platform. Describe its purpose, target audience, and key features. Do not include any mention of "lifetime access".
+
+Setup Instructions (Detailed):
+
+Provide step-by-step instructions for setting up the development environment and running the NSBS platform:
+
+Installing Dependencies: Command to install Node.js dependencies: npm install or yarn install.
+
+Configuring .env.local: Explain how to create and configure the .env.local file. Reference the .env.local.example (if you create one, which is good practice) or list the required environment variables (DATABASE_URL, DIRECT_URL, STRIPE_SECRET_KEY, NEXTAUTH_SECRET, NEXTAUTH_URL, OAuth client IDs/secrets if used). Emphasize not committing .env.local to version control.
+
+Running Prisma Migrations: Command to run Prisma migrations: npx prisma migrate dev --name "init". Explain the purpose of migrations and initial migration name.
+
+Generating Prisma Client: Command to generate Prisma Client: npx prisma generate. Explain why generating the client is necessary after schema changes.
+
+Seeding the Database (Optional): Command to seed the database (if you create a seed script): npx prisma db seed. Explain the purpose of database seeding (e.g., for initial data or development data).
+
+Running Tests (Unit, Integration, E2E): Commands to run tests (even if test suites are not fully implemented yet, include placeholders): npm run test (for unit tests), npm run e2e-test (for E2E tests). Explain the testing strategy (Jest, React Testing Library, Cypress - as mentioned in the prompt).
+
+Starting the Development Server: Command to start the Next.js development server: npm run dev. Explain how to access the application in a browser (e.g., http://localhost:3000).
+
+Technology Stack Summary:
+
+List and briefly describe the main technologies used in the NSBS project:
+
+Next.js (v15.1.7) - React framework, App Router, SSR, etc.
+
+React (v19.0.0) - UI library.
+
+TypeScript (v5.7.2) - Type system.
+
+Tailwind CSS (v4.0.6) - CSS framework.
+
+Prisma - ORM for database interactions.
+
+PostgreSQL (via Supabase) - Database.
+
+authjs v5 - Authentication library.
+
+Zod - Schema validation library.
+
+Zustand - State management library.
+
+Stripe - Payment processing.
+
+(Mention other significant libraries or tools).
+
+Testing Strategy:
+
+Describe the testing strategy for the NSBS platform. Mention the use of Jest, React Testing Library, and/or Cypress for different types of testing (unit, component, integration, E2E). Explain the types of tests planned or implemented (e.g., unit tests for utility functions, component tests for UI components, E2E tests for user flows).
+
+Logging, Performance Monitoring, and Caching Strategies:
+
+Briefly outline the strategies for:
+
+Logging: Mention the use of a logging library (e.g., pino, winston) or console.log for basic logging. Explain where logging is implemented (API routes, critical components).
+
+Performance Monitoring: Briefly discuss plans for performance monitoring (e.g., using Next.js built-in performance features, browser dev tools, or external monitoring services).
+
+Caching: Explain caching strategies used (e.g., SSR caching, hydration, SWR for client-side data fetching, Next.js data cache).
+
+Architectural Diagrams or Explanations:
+
+Include high-level architectural diagrams or detailed explanations for key features:
+
+RBAC (Role-Based Access Control): Explain how RBAC is implemented using authjs v5 middleware and user roles, and how it controls access to different parts of the platform.
+
+Exam Handling: Describe the exam flow, from question retrieval to submission, scoring, and pass/fail determination.
+
+Certificate Generation: Explain the certificate generation process, including PDF library used, security measures (watermarking, digital signature, expiration), and download mechanism.
+
+Payment Integration: Describe the payment integration flow with Stripe, including dynamic payment links, checkout session creation, and handling payment success/failure.
+
+Contributing Guidelines and Coding Standards:
+
+Provide basic contributing guidelines if the project is intended for collaboration.
+
+Outline coding standards and conventions (refer to ESLint, Prettier, TypeScript best practices enforced in the project).
+
+Inline Documentation and Links: Include inline documentation within the README.md and links to external documentation where needed (e.g., links to Next.js, React, Prisma, authjs, Stripe documentation).
+
+Validation Points:
+
+Verify the file is in Markdown format (.md).
+
+Check that all sections are included: Project Overview, Setup Instructions (with all steps), Technology Stack Summary, Testing Strategy, Logging/Performance/Caching Strategies, Architectural Explanations, Contributing Guidelines.
+
+Validate that Setup Instructions are detailed and include all necessary commands and configurations.
+
+Ensure Technology Stack Summary lists and describes all key technologies.
+
+Check for a description of the Testing Strategy.
+
+Validate the outline of Logging, Performance Monitoring, and Caching Strategies.
+
+Ensure Architectural explanations or diagrams are included for RBAC, Exam Handling, Certificate Generation, and Payment Integration.
+
+Check for Contributing Guidelines and Coding Standards section.
+
+Confirm inline documentation and links to external resources are provided.
+
+Ensure no mention of "lifetime access" is present in the overview or setup instructions.
+
+Success Criteria:
+
+README.md file is created with all specified sections and content.
+
+Project overview provides a clear description of the NSBS platform.
+
+Setup instructions are detailed, complete, and easy to follow.
+
+Technology stack summary accurately lists and describes all key technologies.
+
+Testing strategy, logging, performance monitoring, and caching strategies are outlined.
+
+Architectural explanations or diagrams for key features are included and are informative.
+
+Contributing guidelines and coding standards are provided (if applicable).
+
+Inline documentation and links to external resources are present.
+
+README.md provides comprehensive documentation for the NSBS project.
+
+Documentation:
+
+Ensure the entire README.md file is well-written, clear, and comprehensive.
+
+Use Markdown formatting effectively to structure the document and enhance readability.
+
+Provide clear and concise explanations in each section.
+
+Make sure all instructions, commands, and configurations are accurate and up-to-date.
+
+Review the entire README.md for completeness and clarity to ensure it serves as an effective guide for setting up, understanding, and contributing to the NSBS project.
+ 

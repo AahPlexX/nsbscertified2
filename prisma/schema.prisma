@@ -1,0 +1,233 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// User & Authentication Models
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String?         @unique
+  password      String?
+  emailVerified DateTime?
+  image         String?
+  role          Role           @default(STUDENT)
+
+  // Auth.js Relations
+  accounts      Account[]
+  sessions      Session[]
+  authenticator Authenticator[]
+
+  // Application Relations
+  enrollments   Enrollment[]
+  completions   ModuleCompletion[]
+  attempts      ExamAttempt[]
+  certificates  Certificate[]
+  payments      Payment[]
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model Authenticator {
+  id              String  @id @default(cuid())
+  userId          String
+  credentialId    String  @unique
+  credentialData  String
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Course & Learning Models
+model Course {
+  id          String       @id @default(uuid())
+  title       String
+  slug        String       @unique
+  description String       @db.Text
+  price       Int         @default(29900) // $299.00 in cents
+  topics      Topic[]
+  materials   CourseMaterial[]
+  exam        Exam?
+  enrollments Enrollment[]
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Topic {
+  id        String   @id @default(uuid())
+  title     String
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  modules   Module[]
+  order     Int
+
+  createdAt DateTime @default(now())
+}
+
+model Module {
+  id        String    @id @default(uuid())
+  title     String
+  content   String    @db.Text
+  topicId   String
+  topic     Topic     @relation(fields: [topicId], references: [id])
+  order     Int
+  completions ModuleCompletion[]
+
+  createdAt DateTime @default(now())
+}
+
+model CourseMaterial {
+  id        String   @id @default(uuid())
+  title     String
+  fileUrl   String
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Enrollment {
+  id               String       @id @default(uuid())
+  userId           String
+  user             User         @relation(fields: [userId], references: [id])
+  courseId         String
+  course           Course       @relation(fields: [courseId], references: [id])
+  enrollmentDate   DateTime     @default(now())
+  startDate        DateTime?
+  purchasedVouchers Int         @default(2)
+  usedTestVouchers  Int         @default(0)
+  completions      ModuleCompletion[]
+  attempts         ExamAttempt[]
+  payments         Payment[]
+  certificates     Certificate[]
+
+  createdAt DateTime @default(now())
+}
+
+model ModuleCompletion {
+  id           String     @id @default(uuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id])
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id])
+  moduleId     String
+  module       Module     @relation(fields: [moduleId], references: [id])
+  completedAt  DateTime   @default(now())
+}
+
+model Exam {
+  id        String   @id @default(uuid())
+  courseId  String   @unique
+  course    Course   @relation(fields: [courseId], references: [id])
+  passScore Int      @default(80)
+  questions Question[]
+  attempts  ExamAttempt[]
+
+  createdAt DateTime @default(now())
+}
+
+model Question {
+  id           String   @id @default(uuid())
+  examId       String
+  exam         Exam     @relation(fields: [examId], references: [id])
+  text         String   @db.Text
+  options      Json     // Array of exactly 4 options
+  correctIndex Int      @default(0)
+  order        Int
+
+  createdAt    DateTime @default(now())
+}
+
+model ExamAttempt {
+  id           String     @id @default(uuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id])
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id])
+  examId       String
+  exam         Exam       @relation(fields: [examId], references: [id])
+  score        Int?
+  passed       Boolean?
+  answers      Json       // Map of questionId to selectedIndex
+  startedAt    DateTime   @default(now())
+  completedAt  DateTime?
+}
+
+model Certificate {
+  id           String     @id @default(uuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id])
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id])
+  issuedAt     DateTime   @default(now())
+  pdfUrl       String?
+}
+
+model Payment {
+  id           String     @id @default(uuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id])
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id])
+  amount       Int
+  currency     String     @default("USD")
+  status       String
+  stripeId     String?    @unique
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+enum Role {
+  ADMIN
+  STUDENT
+}

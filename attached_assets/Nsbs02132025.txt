@@ -1,0 +1,674 @@
+Create a comprehensive online learning platform, the platform is named: "national Society of business sciences" (NSBS), www.nsbs-certified.com.
+
+NSBS offers text-based courses for $299 lifetime access. Each course should:
+
+- Consist of purely text-based learning materials (no videos or audio)
+- Be 100% self-paced with no deadlines or time restrictions
+- all courses entirely self paced (like alison.org, management and strategy institute, peach-academy)
+- Include topic/module (7 Modules per topic)-based learning modules with clear learning objectives
+- Contain downloadable PDF study materials
+- Provide instant access to all course materials upon enrollment (purchase, $299)
+- Allow learners to study at their own pace and revisit materials anytime
+- Include a final assessment to validate course completion
+   - 100 question exam
+   - 4 multiple choice options per question
+   - pass = 80/100 questions answered correctly
+   - fail = < 80/100 questions answered correctly
+   - each purchase of a course provides 2 "test" aka " exam vouchers
+   - *IF* student fails both times
+   - The student may purchase 1 additional test voucher for $149
+   - The final exam is only available after the student has marked "Module" complete on every respective module
+   - most courses (not all) will have 8 topics
+   - every topic acts as a section or scope of study within the course
+   - every topic is broken down into modules 
+   - most topics (not all) will have 7 modules within it
+   - the student is not tested on each topic
+   - The final exam is the *ONLY* "test" associated with each and every course
+   - all courses are entirely text based
+- Award a downloadable certificate upon successful completion
+
+The platform should:
+- Offer a simple, distraction-free interface focused on reading and learning
+- Include a progress tracking system
+   - progress tracker = xx modules complete of "xx Modules"
+      - "complete" is only measured when the student has checked the "I have completed this module button" within the study ui
+   - Enrollment date
+   - course start date
+- Easy user registration
+- Easy Payment System
+- Simple yet professional Layout
+
+Website Style:
+- Color Scheme: Mattes, Black, Gray, Slate, Tan, White
+- Intuitive navigation with links dynamic reactive links
+- src/app/globals.css
+- src/app/layout.tsx
+- src/app/components/ui/*.tsx (Reusable component location)
+- All Device responsiveness (i.e. laptop, tablet, tv, mobile device)
+- Browser Compatability
+   - Google Chrome
+   - Microsoft Edge
+   - Firefox
+   - Safari
+   - Mac
+   - Android
+- Dark Theme
+
+*Payment:*
+- Stripe 
+   - current course payment link = "Change Management Professional" ("CMS") = https://buy.stripe.com/cN24gT15K07Y8dG4gg
+
+*authentication*
+- authjs v5
+
+*postGres DB* (Using Supabase + Prisma as ORM)
+- Supabase
+   - (.env.local: 
+       - # Connect to Supabase via connection pooling with Supavisor.
+DATABASE_URL="postgresql://postgres.ncuukgdweeughdezkisd:[YOUR-PASSWORD]@aws-0-us-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+
+       - # Direct connection to the database. Used for migrations.
+DIRECT_URL="postgresql://postgres.ncuukgdweeughdezkisd:[YOUR-PASSWORD]@aws-0-us-west-1.pooler.supabase.com:5432/postgres"
+   - (prisma/schema.prisma: 
+       - generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+        
+        
+
+
+*Practical Inclusions:*
+- Include a mobile-responsive design for reading on any device
+
+*general components:* (use shadcn-ui **use the commands below**
+- npx shadcn@latest init
+- npx shadcn@latest add
+
+**Exclude all aka (DO NOT IMPLEMENT)**:
+- Live sessions or webinars
+- Progress tracker
+- Practical Assignments
+- Real-time collaboration tools
+- Collaboration of any type
+- Course search or filter 
+   - All courses are business related, therefor course filtering is not necessary
+- Instructor interactions
+- Time limitations
+- Prerequisites
+- Difficulty ratings
+- Group projects
+- Discussion forums
+- Assignments or essays
+- Pop quizzes
+- Blog posts
+- Collaborative features
+- extracurricular assignments
+- essays
+- personalized learning paths
+- peer review system
+- discussion forums
+- live session support
+- Resume Generator
+- Subscription management (NO SUBSCRIPTIONS)
+- mentions of postgraduation
+- mentions or promises of career opportunities
+- mentions of courses being developed by "xx"
+
+The RBAC consists of: 
+- (Admin | Student)
+   - 1 admin exists (me)
+
+ADMIN required route access: 
+- all routes and locations (single admin, me)
+- must have dashboard
+- must have course creator (i.e. course creation canvas, GUI, drafting aka like microsoft word built into the backend or admin portal of the site)
+
+Students must have: 
+- dashboard (upon sign up "Sign up" aka "Registration"
+   - Ability to purchase courses (Reminder: All courses cost $299 USD, individually)
+	- *If Course is Purchased*
+		- Access to specific, *validation required* -paid for course(s)
+			- access to earned certificates (if applicable)
+
+Public (Unregistered users):
+- General website visitor
+
+Publically accessible pages: 
+- src/app/page.tsx (homepage)
+Course Catalog Page: src/app/courseroute/courselist/page.tsx
+Course Description Page: src/app/courseroute/coursedescription/[id]/page.tsx
+
+**/prisma/schema.prisma:**
+-generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+//////////////////////////////
+// 1. USER AUTHENTICATION (MERGED)
+//////////////////////////////
+
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String?         @unique
+  password      String?         // Hashed password (for credential login)
+  emailVerified DateTime?
+  image         String?
+  role          Role            @default(STUDENT)
+
+  // Auth.js Relationships
+  accounts      Account[]
+  sessions      Session[]
+  authenticator Authenticator[]
+
+  // NSBS Relationships
+  enrollments   Enrollment[]
+  completions   ModuleCompletion[]
+  attempts      ExamAttempt[]
+  certificates  Certificate[]
+  payments      Payment[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+//////////////////////////////
+// 2. NSBS PLATFORM MODELS
+//////////////////////////////
+
+model Course {
+  id          String       @id @default(uuid())
+  title       String
+  slug        String       @unique
+  description String
+  price       Int          @default(29900) // Stored in cents ($299.00)
+  topics      Topic[]
+  materials   CourseMaterial[]
+  exam        Exam?
+  enrollments Enrollment[]
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Topic {
+  id       String   @id @default(uuid())
+  title    String
+  course   Course   @relation(fields: [courseId], references: [id])
+  courseId String
+  modules  Module[]
+  order    Int
+
+  createdAt DateTime @default(now())
+}
+
+model Module {
+  id       String  @id @default(uuid())
+  title    String
+  content  String
+  topic    Topic   @relation(fields: [topicId], references: [id])
+  topicId  String
+  order    Int
+
+  createdAt DateTime @default(now())
+}
+
+model Enrollment {
+  id               String       @id @default(uuid())
+  user             User         @relation(fields: [userId], references: [id])
+  userId           String
+  course           Course       @relation(fields: [courseId], references: [id])
+  courseId         String
+  enrollmentDate   DateTime     @default(now())
+  startDate        DateTime?
+  purchasedVouchers Int         @default(0)
+  usedTestVouchers  Int         @default(0)
+  completions      ModuleCompletion[]
+  attempts         ExamAttempt[]
+  payments        Payment[]
+
+  createdAt DateTime @default(now())
+}
+
+model ModuleCompletion {
+  id           String       @id @default(uuid())
+  user         User         @relation(fields: [userId], references: [id])
+  userId       String
+  enrollment   Enrollment   @relation(fields: [enrollmentId], references: [id])
+  enrollmentId String
+  module       Module       @relation(fields: [moduleId], references: [id])
+  moduleId     String
+  completedAt  DateTime     @default(now())
+}
+
+model Exam {
+  id        String      @id @default(uuid())
+  course    Course      @relation(fields: [courseId], references: [id])
+  courseId  String
+  passScore Int         @default(80)
+  questions Question[]
+  attempts  ExamAttempt[]
+
+  createdAt DateTime    @default(now())
+}
+
+model Question {
+  id           String   @id @default(uuid())
+  exam         Exam     @relation(fields: [examId], references: [id])
+  examId       String
+  text         String
+  options      Json     // ["Option A", "Option B", "Option C", "Option D"]
+  correctIndex Int      @default(0)
+  order        Int
+
+  createdAt DateTime @default(now())
+}
+
+model ExamAttempt {
+  id           String       @id @default(uuid())
+  user         User         @relation(fields: [userId], references: [id])
+  userId       String
+  enrollment   Enrollment   @relation(fields: [enrollmentId], references: [id])
+  enrollmentId String
+  exam         Exam         @relation(fields: [examId], references: [id])
+  examId       String
+  score        Int?
+  passed       Boolean?
+  answers      Json         // {questionId: selectedIndex}
+
+  createdAt DateTime @default(now())
+}
+
+//////////////////////////////
+// 3. ENUMS
+//////////////////////////////
+
+enum Role {
+  ADMIN
+  STUDENT
+}
+
+
+// KEY FIXES & OPTIMIZATIONS
+✅ Merged User model to avoid duplication
+✅ Auth.js handles authentication (OAuth + Sessions + WebAuthn optional)
+✅ NSBS handles role-based access, payments, enrollments, and exams
+✅ No redundant authentication models
+✅ Fully production-ready with Prisma + Next.js + Auth.js + Supabase
+
+🚀 Next Steps
+**Run Prisma Migrations**
+- npx prisma migrate dev --name "init"
+
+**Generate Prisma Client**
+- npx prisma generate
+
+**Run Seeding**
+- npx prisma db seed 
+
+//
+
+**package.json:**
+-{
+  "name": "nsbs",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development next dev",
+    "build": "cross-env NODE_ENV=production next build",
+    "start": "cross-env NODE_ENV=production next start",
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "type-check": "tsc --noEmit",
+    "prepare": "husky install",
+    "validate": "npm run lint && npm run type-check && npm run format",
+    "clean": "rm -rf .next node_modules"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.7.2",
+    "@auth/prisma-adapter": "^1.0.0",
+    "@auth/core": "^1.0.0",
+    "auth": "^5.0.0",
+    "bcryptjs": "^2.4.3",
+    "class-variance-authority": "^1.0.0",
+    "clsx": "^2.0.0",
+    "lucide-react": "^1.0.0",
+    "next": "^15.1.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^2.0.0",
+    "tailwindcss-animate": "^1.0.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.0.0",
+    "@next/eslint-plugin-next": "^13.2.4",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.1.7",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^8.0.0",
+    "lint-staged": "^14.0.0",
+    "postcss": "^8.4.35",
+    "prettier": "^3.1.0",
+    "tailwindcss": "^4.0.6",
+    "typescript": "^5.7.2",
+    "ts-node": "^10.9.1",
+    "prisma": "^5.7.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,css,md}": [
+      "prettier --write",
+      "eslint --fix",
+      "tsc --noEmit"
+    ]
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  }
+}
+
+**tailwind.config.ts:**
+import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
+
+const tailwindConfig: Config = {
+  darkMode: ["class"],
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        chart: {
+          1: "hsl(var(--chart-1))",
+          2: "hsl(var(--chart-2))",
+          3: "hsl(var(--chart-3))",
+          4: "hsl(var(--chart-4))",
+          5: "hsl(var(--chart-5))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+    },
+  },
+  plugins: [
+    require("tailwindcss-animate"),
+    plugin(({ addVariant }) => {
+      addVariant("supports-hover", "@media (hover: hover)");
+    }),
+  ],
+};
+
+export default tailwindConfig;
+
+
+**Optimized tsconfig.json:**
+
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["DOM", "ESNext"],
+    "jsx": "preserve",
+    "strict": true,
+    "moduleResolution": "bundler",
+    "allowJs": false,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["./src/components/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@types/*": ["./src/types/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", ".next"]
+}
+
+**notes:**
+✅ Added "forceConsistentCasingInFileNames": true for stricter case consistency.
+✅ Added @types/* aliasing for improved type imports.
+✅ Limited include scope to src/**/* for efficiency.
+
+**next.config.ts:**
+
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+  experimental: {
+    serverActions: true,
+    appDir: true,
+  },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
+  images: {
+    domains: ["yourdomain.com", "res.cloudinary.com"],
+  },
+};
+
+export default nextConfig;
+
+**notes:**
+✅ Enabled reactStrictMode & swcMinify for performance.
+✅ Added experimental.serverActions for Next.js 15.
+✅ Restricted images.domains to trusted sources.
+✅ Ensured TypeScript & ESLint strictness.
+
+**eslint.config.ts:**
+
+import next from "@next/eslint-plugin-next";
+import { FlatCompat } from "@eslint/eslintrc";
+import type { Linter } from "eslint";
+
+const compat = new FlatCompat();
+
+const config: Linter.FlatConfig[] = [
+  ...compat.extends("next/core-web-vitals"),
+  {
+    ignores: ["node_modules", "dist", ".next", "build"],
+    plugins: [
+      "@typescript-eslint",
+      "unused-imports",
+      "import",
+      "prettier"
+    ],
+    rules: {
+      // ✅ Enforce Prettier Formatting
+      "prettier/prettier": "error",
+
+      // ✅ Auto-remove unused imports
+      "unused-imports/no-unused-imports": "error",
+      "unused-imports/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+
+      // ✅ Enforce best import ordering (alphabetized)
+      "import/order": [
+        "error",
+        {
+          "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+          "newlines-between": "always",
+          "alphabetize": { "order": "asc", "caseInsensitive": true }
+        }
+      ],
+
+      // ✅ Block unresolved imports
+      "import/no-unresolved": "error",
+
+      // ✅ Allow both named and default exports
+      "import/no-default-export": "off",
+
+      // ✅ Restrict unnecessary console.logs in production
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+
+      // ✅ Disallow outdated libraries (forces modern alternatives)
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            { name: "lodash", message: "Use native JS methods or Lodash-es." },
+            { name: "moment", message: "Use date-fns or Temporal API instead." }
+          ]
+        }
+      ],
+
+      // ✅ Enforce stricter TypeScript best practices
+      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/explicit-function-return-type": [
+        "error",
+        { allowExpressions: true, allowConciseArrowFunctionExpressionsStartingWithVoid: true }
+      ],
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        { prefer: "type-imports", disallowTypeAnnotations: false }
+      ]
+    },
+    settings: {
+      "import/resolver": {
+        typescript: {
+          project: "./tsconfig.json"
+        }
+      }
+    }
+  }
+];
+
+export default config;
+
+
+**notes:**
+✅ Blocked lodash and moment imports (not needed in modern Next.js).
+✅ Enforced explicit error handling for TypeScript & imports.
+
+✅ Final Steps
+
+**Run Prisma Migrations**
+-npx prisma migrate dev --name "init"
+
+**Generate Prisma Client**
+- npx prisma generate
+
+**Run Seeding**
+-npx prisma db seed
+
+
+
+
+***you are tasked with meticulously decomposing this project into definitive, all inclusive, indicative that an expert coder has planned and executed the “perfect modern codebase builder that is modernized to be demonstrably newer than the >03/2024 - do not use any outdated and/or depreciated scripting. Make sure that all code writing abides by the “S.O.L.I.D” principle, do not use “JS”, “jsx”, “Mjs”, this is a “next” with “src” and “app”, using the “approuter” *not page or file router*
+
+**you must meticulously ensure that every individual file in the file tree adheres to the modern syntax rules of the project and framework it is being converted to. 
+
+** do not attempt to cut any corners **
+
+work systematically and methodically through each step until we have a rewritten plan for our new project framework
