@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useParams } from "next/navigation";
@@ -6,6 +5,7 @@ import { Link } from "next/link";
 import { ProgressTracker } from "@components/ProgressTracker";
 import { CourseModule } from "@components/CourseModule";
 import { useCourseStore } from "@store/courseStore";
+import { useState, useEffect } from 'react';
 
 interface Course {
   id: string;
@@ -22,7 +22,7 @@ interface Course {
 export default function CourseDescription(): JSX.Element {
   const params = useParams();
   const courseId = params.id as string;
-  const { setCurrentCourse, completedModules } = useCourseStore();
+  const { setCurrentCourse } = useCourseStore();
   const [course, setCourse] = useState<Course | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -65,7 +65,6 @@ export default function CourseDescription(): JSX.Element {
     );
   }
 
-  // Get payment link based on course ID
   const paymentLinks = {
     "cmp": "https://buy.stripe.com/cN24gT15K07Y8dG4gg",
     "rmp": "https://buy.stripe.com/bIY3cP9Cg4oefG8eUW",
@@ -81,7 +80,7 @@ export default function CourseDescription(): JSX.Element {
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-foreground mb-8">{course.title}</h1>
         <p className="text-muted-foreground mb-8">{course.description}</p>
-        
+
         <ProgressTracker />
 
         <div className="grid gap-6 mt-8">
@@ -104,17 +103,6 @@ export default function CourseDescription(): JSX.Element {
             Enroll Now
           </Link>
         </div>
-
-        {completedModules.length === course.modules.length && (
-          <div className="mt-8">
-            <Link
-              href={`/exam/${courseId}`}
-              className="inline-block bg-secondary text-secondary-foreground px-6 py-3 rounded-md hover:bg-secondary/80 transition-colors"
-            >
-              Take Final Exam
-            </Link>
-          </div>
-        )}
       </div>
     </main>
   );

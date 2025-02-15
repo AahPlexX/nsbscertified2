@@ -1,82 +1,69 @@
-
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Card } from "@components/Card";
-import { Button } from "@components/Button";
-import { ProgressTracker } from "@components/ProgressTracker";
-import { CertificateDownload } from "@components/CertificateDownload";
-import type { Enrollment, ExamAttempt } from "@prisma/client";
-import { useUserStore } from "@store/userStore";
+import { useState, useEffect } from 'react';
+import { Link } from 'next/link';
+import { ProgressTracker } from '@components/ui/ProgressTracker';
+import { CertificateDownload } from '@components/ui/CertificateDownload';
+import { useCourseStore } from '@store/courseStore';
+import { useUserStore } from '@store/userStore';
 
-interface EnrollmentWithCourse extends Enrollment {
-  course: { title: string; id: string };
+interface EnrolledCourse {
+  id: string;
+  title: string;
+  enrollmentDate: string;
+  startDate?: string;
+  progress: number;
+  moduleCount: number;
+  completedModules: string[];
+  examAttempts: Array<{
+    date: string;
+    score: number;
+    passed: boolean;
+  }>;
 }
 
-interface ExamAttemptWithCourse extends ExamAttempt {
-  course: { title: string };
-}
-
-export default function StudentDashboard(): JSX.Element {
-  const [enrollments, setEnrollments] = useState<EnrollmentWithCourse[]>([]);
-  const [examHistory, setExamHistory] = useState<ExamAttemptWithCourse[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+export default function StudentDashboard() {
+  const { isAuthenticated } = useUserStore();
+  const { completedModules, totalModulesCount } = useCourseStore();
+  const [enrolledCourses, setEnrolledCourses] = useState<EnrolledCourse[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const { isAuthenticated, userId } = useUserStore();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStudentData = async () => {
+    async function fetchEnrollments() {
       try {
-        setIsLoading(true);
-        setError(null);
-
-        const [enrollmentsRes, examHistoryRes] = await Promise.all([
-          fetch('/api/student/enrollments'),
-          fetch('/api/student/exam-history')
-        ]);
-
-        if (!enrollmentsRes.ok || !examHistoryRes.ok) {
-          throw new Error('Failed to fetch student data');
-        }
-
-        const [enrollmentsData, examHistoryData] = await Promise.all([
-          enrollmentsRes.json(),
-          examHistoryRes.json()
-        ]);
-
-        setEnrollments(enrollmentsData);
-        setExamHistory(examHistoryData);
+        const response = await fetch('/api/student/enrollments');
+        if (!response.ok) throw new Error('Failed to fetch enrollments');
+        const data = await response.json();
+        setEnrolledCourses(data);
       } catch (err) {
-        console.error('Student data fetch error:', err);
-        setError('Failed to load student data');
+        setError(err instanceof Error ? err.message : 'Failed to load enrollments');
+        console.error('Error fetching enrollments:', err);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
-    };
-
-    if (isAuthenticated && userId) {
-      fetchStudentData();
     }
-  }, [isAuthenticated, userId]);
+
+    if (isAuthenticated) {
+      fetchEnrollments();
+    }
+  }, [isAuthenticated]);
 
   if (!isAuthenticated) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <Card>
-          <div className="p-6 text-center">
-            <h1 className="text-xl font-semibold text-destructive">Access Denied</h1>
-            <p className="mt-2">Please log in to view your dashboard.</p>
-          </div>
-        </Card>
+        <div className="text-center p-6 bg-white rounded-lg shadow">
+          <h1 className="text-xl font-semibold text-red-600">Access Denied</h1>
+          <p className="mt-2">Please log in to view your dashboard.</p>
+        </div>
       </div>
     );
   }
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">Loading your dashboard...</div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
       </div>
     );
   }
@@ -84,98 +71,55 @@ export default function StudentDashboard(): JSX.Element {
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <Card>
-          <div className="p-6 text-center">
-            <h1 className="text-xl font-semibold text-destructive">Error</h1>
-            <p className="mt-2">{error}</p>
-            <Button
-              label="Retry"
-              onClick={() => window.location.reload()}
-              variant="primary"
-              className="mt-4"
-            />
-          </div>
-        </Card>
+        <div className="text-center p-6 bg-white rounded-lg shadow">
+          <h1 className="text-xl font-semibold text-red-600">Error</h1>
+          <p className="mt-2">{error}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-8 text-3xl font-bold">My Dashboard</h1>
+    <main className="min-h-screen bg-background py-12">
+      <div className="container mx-auto px-4">
+        <h1 className="text-3xl font-bold mb-8">My Courses</h1>
 
-      {/* Enrolled Courses */}
-      <section className="mb-8">
-        <h2 className="mb-4 text-2xl font-semibold">My Courses</h2>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {enrollments.map((enrollment) => (
-            <Card key={enrollment.id}>
-              <div className="p-6">
-                <h3 className="mb-2 text-xl font-medium">
-                  {enrollment.course.title}
-                </h3>
-                <div className="mb-4">
-                  <ProgressTracker enrollmentId={enrollment.id} />
-                </div>
-                <div className="flex justify-between">
-                  <Link 
-                    href={`/courseroute/coursedescription/${enrollment.course.id}`}
-                  >
-                    <Button label="Continue Learning" variant="secondary" />
-                  </Link>
-                  {enrollment.passed && (
-                    <CertificateDownload
-                      studentName={enrollment.studentName}
-                      courseName={enrollment.course.title}
-                      completionDate={enrollment.completedAt}
-                      certificateId={enrollment.certificateId}
-                    />
+        <div className="grid gap-6">
+          {enrolledCourses.map((course) => (
+            <div key={course.id} className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold mb-4">{course.title}</h2>
+
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-gray-600">Enrolled: {new Date(course.enrollmentDate).toLocaleDateString()}</p>
+                  {course.startDate && (
+                    <p className="text-sm text-gray-600">Started: {new Date(course.startDate).toLocaleDateString()}</p>
                   )}
                 </div>
+
+                <ProgressTracker />
+
+                {course.completedModules.length === course.moduleCount && (
+                  <div className="mt-4">
+                    <Link
+                      href={`/exam/${course.id}`}
+                      className="inline-block bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/90 transition-colors"
+                    >
+                      Take Final Exam
+                    </Link>
+                  </div>
+                )}
+
+                {course.examAttempts.length > 0 && course.examAttempts.some(attempt => attempt.passed) && (
+                  <div className="mt-4">
+                    <CertificateDownload />
+                  </div>
+                )}
               </div>
-            </Card>
+            </div>
           ))}
         </div>
-      </section>
-
-      {/* Exam History */}
-      <section>
-        <h2 className="mb-4 text-2xl font-semibold">Exam History</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="px-4 py-2 text-left">Course</th>
-                <th className="px-4 py-2 text-left">Date</th>
-                <th className="px-4 py-2 text-left">Score</th>
-                <th className="px-4 py-2 text-left">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {examHistory.map((attempt) => (
-                <tr key={attempt.id} className="border-b">
-                  <td className="px-4 py-2">{attempt.course.title}</td>
-                  <td className="px-4 py-2">
-                    {new Date(attempt.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-2">{attempt.score}%</td>
-                  <td className="px-4 py-2">
-                    <span
-                      className={`inline-block rounded px-2 py-1 text-sm ${
-                        attempt.passed
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}
-                    >
-                      {attempt.passed ? 'Passed' : 'Failed'}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </div>
+      </div>
+    </main>
   );
 }
