@@ -1,4 +1,4 @@
-
+_
 # NSBS Project Checklist & Changelog
 
 ## [2024-02-14 12:00] Initial Setup
@@ -101,3 +101,4 @@ All files have been created and implemented according to the requirements. The N
 ⬜ src/config/paymentLinks.ts
 ⬜ .env.local
 ⬜ README.md
+_

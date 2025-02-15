@@ -1,0 +1,50 @@
+You are a senior back‑end developer tasked with creating three production‑ready API endpoints for the NSBS project. These endpoints will provide admin statistics and must meet FAANG-level standards. Each endpoint should be implemented as a Next.js App Router API route in TypeScript (.ts) and include robust error handling, RBAC enforcement (so that only authenticated admins can access the endpoints), and use the Prisma client (imported from "/src/lib/prisma.ts") to query the PostgreSQL database. Follow the instructions below for each endpoint.
+
+General Guidelines for All Endpoints:
+- Use Next.js App Router conventions: each endpoint should be defined in a file named "route.ts" within its directory.
+- Enforce RBAC: Only users with an "ADMIN" role should be allowed. Check authentication via middleware or within the endpoint and return appropriate HTTP status codes (e.g., 401 Unauthorized or 403 Forbidden) when access is denied.
+- Use strict TypeScript; avoid "any" types and include explicit types for request, response, and data.
+- Include robust error handling: wrap database queries and other operations in try-catch blocks, log errors (using console.error or a logging library), and return meaningful error messages with proper HTTP status codes.
+- Include inline comments and JSDoc where applicable, explaining the logic, error handling, and any assumptions.
+- Follow FAANG-level coding conventions and production-ready standards (≥ 08/2024).
+
+Now, create the following three API endpoints:
+
+1. **Admin User Statistics Endpoint**
+   - **File Path:** /src/app/api/admin/stats/users/route.ts
+   - **Requirements:**
+     - This endpoint should handle GET requests.
+     - Use the Prisma client (from /src/lib/prisma.ts) to query and return statistics about users (e.g., total number of users, recent registrations).
+     - Enforce that the request comes from an authenticated admin. If not, return a 401/403 error.
+     - On success, return a JSON object with user statistics.
+     - Include inline error handling (try-catch), logging errors, and returning a 500 error on failure.
+     - Use appropriate TypeScript types for the request and response.
+
+2. **Admin Payment Statistics Endpoint**
+   - **File Path:** /src/app/api/admin/stats/payments/route.ts
+   - **Requirements:**
+     - This endpoint should handle GET requests.
+     - Query the database via Prisma to fetch payment statistics (e.g., total revenue, revenue by course, recent transactions).
+     - Enforce admin-only access; if the requester is not an admin, return a 401/403 error.
+     - Return the payment statistics in JSON format on success.
+     - Implement robust error handling with try-catch blocks and log any errors.
+     - Include TypeScript types for clarity and avoid "any".
+
+3. **Admin Exam Statistics Endpoint**
+   - **File Path:** /src/app/api/admin/stats/exams/route.ts
+   - **Requirements:**
+     - This endpoint should handle GET requests.
+     - Use Prisma to query exam-related data (e.g., number of exams taken, average exam scores, pass/fail rates).
+     - Enforce that only authenticated admin users can access this endpoint.
+     - Return a JSON object containing the exam statistics.
+     - Implement comprehensive error handling, logging, and return proper HTTP error codes if something fails.
+     - Ensure all code is strictly typed and adheres to Next.js App Router API conventions.
+
+For each endpoint, include inline comments detailing:
+- The purpose of the endpoint.
+- How RBAC is enforced (e.g., by checking a user session from authjs v5 or a similar mechanism).
+- How the Prisma client is used to fetch data.
+- What errors might be thrown and how they are handled.
+- Example response structure (as inline documentation).
+
+Your final output should be three complete, separate API route files (one for each endpoint) meeting the above requirements. Ensure that all file paths are correct and that the code is fully production-ready according to FAANG-level standards.
