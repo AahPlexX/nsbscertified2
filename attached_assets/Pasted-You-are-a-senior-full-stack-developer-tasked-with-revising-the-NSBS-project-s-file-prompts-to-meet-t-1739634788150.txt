@@ -1,0 +1,37 @@
+You are a senior full‑stack developer tasked with revising the NSBS project's file prompts to meet the following new requirements:
+
+**Current Setup:**
+- The public Course Description page (/src/app/courseroute/coursedescription/[id]/page.tsx) currently shows a "Take Final Exam" button once all modules are completed.
+- The new requirement is that the final exam should be accessible only within a student-specific context (e.g., in the Student Dashboard or within an enrolled course module container). In other words, non-enrolled users and the general public should only see course details and an "Enroll Now" button. Once a user is enrolled and viewing their enrolled courses (or the module container for a specific course), the "Take Final Exam" button should appear—if all modules for that course are completed.
+
+**Your Task:**  
+Update the file prompts below to reflect these changes:
+
+1. **Course Description Page (/src/app/courseroute/coursedescription/[id]/page.tsx):**
+   - **Remove** any logic that conditionally renders the "Take Final Exam" button.
+   - Ensure that this page remains public and displays the course title, description, modules, and an "Enroll Now" button (with dynamic payment link).
+   - Update inline documentation to note that the final exam link is now managed elsewhere.
+
+2. **Student Dashboard Page (/src/app/student/dashboard/page.tsx):**
+   - **Add** new logic to render a "Take Final Exam" button for each enrolled course.
+   - For each course in the student's enrolled courses list, check that:
+     - The student is authenticated and has a valid enrollment.
+     - The user’s progress (retrieved from the Zustand store) shows that all modules for that course have been completed.
+   - If both conditions are met, render a "Take Final Exam" button that links to the exam page (e.g., `/exam/[courseId]`).
+   - Ensure that this logic uses strict TypeScript and proper error handling.
+   - Update inline documentation to describe the new exam access flow and why it is now located on the Student Dashboard rather than on the public course description page.
+
+3. **Module Container or Enrolled Course Component (if applicable):**
+   - If your project includes a separate component or container for enrolled courses (beyond the student dashboard), update it similarly to conditionally render the "Take Final Exam" button based on the enrollment and module completion status.
+   - Ensure that this component references the student's enrollment and module progress correctly.
+   - Update inline comments to reflect that exam access is gated by enrollment and complete module progress.
+
+**General Guidelines:**
+- All updates must continue to follow FAANG-level standards: strict TypeScript (".ts" and ".tsx" only, no "any"), robust error handling with try-catch blocks, proper usage of "use client" directives where needed, and detailed inline JSDoc comments.
+- Ensure that UI components are styled consistently using Tailwind CSS and that import/export rules (including barrel files) remain intact.
+- Update all inline documentation to reflect that the final exam access is now exclusively for authenticated, enrolled students in their dashboard (or enrolled course module container) and not available on the public course description page.
+- Maintain strict RBAC, ensuring that only authenticated users with valid enrollments can access exam features.
+
+Produce your updated file prompts as a single unified document, ensuring that each affected file (Course Description page, Student Dashboard, and any enrolled course container component) includes these revisions along with detailed validation points, success criteria, and inline documentation adjustments.
+
+Your final output should be a complete, revised set of file prompts that reflect these changes.
